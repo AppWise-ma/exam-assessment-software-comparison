@@ -12,6 +12,7 @@ Every value links to a source and a date. Read [how we test and pick winners](ME
 | Product | Platform | License | Price model | Version tested | Features checked |
 |---|---|---|---|---|---|
 | [Moodle (Quiz activity)](https://moodle.org) | Web app | GPL-3.0-or-later | free | 5.2.3 | 41/50 |
+| [Next Exams (ours)](https://www.nextsoftware.dev/joomla-extensions/next-exams) | Joomla | GPL-2.0-or-later | paid (GPL) | 6.1.0 | 39/50 |
 | [Odoo Survey](https://www.odoo.com/app/surveys) | Odoo | LGPL-3.0-only | free | 20.0 | 25/50 |
 | [Quiz and Survey Master](https://quizandsurveymaster.com) | WordPress | GPL-2.0-only | freemium | 11.2.7 | 30/50 |
 | [QuizTools](https://extensions.joomla.org/extension/living/education-a-culture/quiztools/) | Joomla | GPL-2.0-or-later | free | 1.5.0 | 28/50 |

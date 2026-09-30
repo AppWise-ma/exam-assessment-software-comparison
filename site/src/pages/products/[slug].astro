@@ -4,7 +4,7 @@ import Base from "../../layouts/Base.astro";
 import CellValue from "../../components/CellValue.astro";
 import { absUrl, areas, loadHealth, productCoverage, products, url } from "../../lib/data.ts";
 import type { Product } from "../../../../scripts/lib/data.ts";
-import { PLATFORM_LABEL, REPO_URL, isAssessed, softwareApplicationLd } from "../../../../scripts/lib/site.ts";
+import { PLATFORM_LABEL, REPO_URL, comparePairs, isAssessed, softwareApplicationLd } from "../../../../scripts/lib/site.ts";
 
 export const getStaticPaths = (() =>
   products.map((p) => ({ params: { slug: p.slug }, props: { product: p } }))) satisfies GetStaticPaths;
@@ -17,6 +17,8 @@ const license = product.features["cost.license_spdx"];
 
 const title = `${product.name} ${product.version_tested}: exam features checked against sources`;
 const description = `${product.summary.trim()} ${assessed} of ${total} features checked, each linked to its source.`.slice(0, 300);
+const pairs = comparePairs(products.map((p) => p.slug)).filter((c) => c.a === product.slug || c.b === product.slug);
+const nameOf = (slug: string) => products.find((p) => p.slug === slug)?.name ?? slug;
 const day = (iso: string | null | undefined) => (iso ? iso.slice(0, 10) : "unknown");
 ---
 <Base
@@ -54,6 +56,15 @@ const day = (iso: string | null | undefined) => (iso ? iso.slice(0, 10) : "unkno
     <dt>Data file</dt>
     <dd><a href={`${REPO_URL}/blob/main/data/products/${product.slug}.yaml`}>data/products/{product.slug}.yaml</a></dd>
   </dl>
+
+  {pairs.length > 0 && (
+    <>
+      <h2 id="compare">Side-by-side comparisons</h2>
+      <ul>
+        {pairs.map((c) => <li><a href={url(`compare/${c.pair}/`)}>{nameOf(c.a)} vs {nameOf(c.b)}</a></li>)}
+      </ul>
+    </>
+  )}
 
   <h2 id="health">Project health</h2>
   {health ? (
