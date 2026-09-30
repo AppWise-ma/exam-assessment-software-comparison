@@ -1,9 +1,8 @@
 ---
 import type { GetStaticPaths } from "astro";
 import Base from "../../layouts/Base.astro";
-import AreaTable from "../../components/AreaTable.astro";
-import ProductsTable from "../../components/ProductsTable.astro";
-import { absUrl, areas, products } from "../../lib/data.ts";
+import ComparisonApp from "../../components/ComparisonApp.astro";
+import { absUrl, products } from "../../lib/data.ts";
 import type { Product } from "../../../../scripts/lib/data.ts";
 import { PLATFORM_LABEL, softwareApplicationLd } from "../../../../scripts/lib/site.ts";
 
@@ -38,8 +37,8 @@ const itemList = {
   description={description}
   breadcrumbs={[{ name: label, path: `platform/${platform}/` }]}
   ld={[itemList]}
+  wide
 >
   <h1>{heading}</h1>
-  <ProductsTable products={items} />
-  {areas.map((area) => <AreaTable area={area} products={items} idPrefix={platform} />)}
+  <ComparisonApp products={items} />
 </Base>

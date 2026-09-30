@@ -3,7 +3,7 @@
 // No pages are emitted until data/products/next-exams.yaml exists.
 import type { GetStaticPaths } from "astro";
 import Base from "../../layouts/Base.astro";
-import AreaTable from "../../components/AreaTable.astro";
+import ComparisonApp from "../../components/ComparisonApp.astro";
 import { absUrl, areas, bySlug, products, verdicts } from "../../lib/data.ts";
 import type { Product } from "../../../../scripts/lib/data.ts";
 import { comparePairs, softwareApplicationLd } from "../../../../scripts/lib/site.ts";
@@ -38,11 +38,12 @@ const itemList = {
   description={description}
   breadcrumbs={[{ name: `${a.name} vs ${b.name}`, path }]}
   ld={[itemList]}
+  wide
 >
   <h1>{a.name} vs {b.name}</h1>
   <p class="lead">
     {a.affiliated && `${a.name} is made by the maintainers of this comparison. `}
-    Both products are checked against the same feature definitions. Hover a value to see when it was checked.
+    Both products are checked against the same feature definitions. Click a value to open its source.
   </p>
   {relevant.length > 0 && (
     <>
@@ -57,5 +58,5 @@ const itemList = {
       </ul>
     </>
   )}
-  {areas.map((area) => <AreaTable area={area} products={[a, b]} idPrefix="cmp" />)}
+  <ComparisonApp products={[a, b]} />
 </Base>
