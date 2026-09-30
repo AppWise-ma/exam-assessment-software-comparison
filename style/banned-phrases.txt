@@ -1,0 +1,54 @@
+# Words and patterns that make text read like marketing or machine filler.
+# One entry per line, matched case-insensitively on word boundaries.
+# Lines starting with "re:" are regular expressions.
+# If a word is the precise technical term (for example "robust statistics"),
+# rephrase anyway: there is almost always a plainer word.
+
+seamless
+seamlessly
+robust
+cutting-edge
+state-of-the-art
+best-in-class
+world-class
+game-changer
+game-changing
+revolutionary
+revolutionize
+unparalleled
+effortless
+effortlessly
+powerful
+leverage
+empower
+empowers
+elevate
+unlock
+unleash
+supercharge
+streamline
+harness
+delve
+tapestry
+landscape
+realm
+comprehensive
+cutting edge
+next-level
+look no further
+whether you're
+in today's
+fast-paced
+it's worth noting
+it is worth noting
+in conclusion
+furthermore
+moreover
+boasts
+a wide range of
+a plethora of
+user-friendly
+intuitive
+re:\bnot (just|only) [^.]{1,40}, (it'?s|but)\b
+re:\bthe ultimate\b
+re:!{1}\s*$

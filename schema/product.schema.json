@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "product.schema.json",
+  "title": "Product",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["slug", "name", "platform", "homepage", "version_tested", "affiliated", "summary", "features"],
+  "properties": {
+    "slug": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+    "name": { "type": "string", "minLength": 1 },
+    "platform": {
+      "enum": ["joomla", "wordpress", "odoo", "standalone-web", "desktop", "mobile"]
+    },
+    "homepage": { "type": "string", "format": "uri" },
+    "repository": {
+      "description": "Public source repository. Omit when source is only available after purchase.",
+      "type": "string",
+      "format": "uri"
+    },
+    "version_tested": { "type": "string", "minLength": 1 },
+    "affiliated": {
+      "description": "true when the maintainers of this comparison make the product. Shown on every page.",
+      "type": "boolean"
+    },
+    "summary": {
+      "description": "One or two plain sentences: what it is and who it suits. No marketing language.",
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 400
+    },
+    "features": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z_]+\\.[a-z_]+$" },
+      "additionalProperties": { "$ref": "#/$defs/cell" }
+    }
+  },
+  "$defs": {
+    "cell": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value"],
+      "properties": {
+        "value": {
+          "anyOf": [
+            { "enum": ["yes", "partial", "addon-paid", "addon-free", "no", "unverified"] },
+            { "type": "integer", "minimum": 0 },
+            { "type": "string", "minLength": 1 }
+          ]
+        },
+        "note": { "type": "string", "maxLength": 300 },
+        "method": { "enum": ["hands-on", "docs", "changelog", "source-code"] },
+        "source_url": { "type": "string", "format": "uri" },
+        "evidence": {
+          "description": "Path under evidence/ to a screenshot or file backing the value.",
+          "type": "string",
+          "pattern": "^evidence/"
+        },
+        "verified_at": { "type": "string", "format": "date" },
+        "version": {
+          "description": "Version the value applies to, when different from version_tested.",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

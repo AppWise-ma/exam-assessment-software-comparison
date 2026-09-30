@@ -1,0 +1,45 @@
+name: Monthly refresh
+
+on:
+  schedule:
+    - cron: "0 6 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Fetch project health
+        run: npm run health
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Stale report
+        id: stale
+        run: |
+          {
+            echo 'report<<EOF'
+            npm run --silent validate | grep -E 'stale|ERROR' || echo "No stale cells."
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          branch: chore/monthly-refresh
+          title: "Monthly refresh: project health and stale cells"
+          commit-message: "chore: refresh project health data"
+          body: |
+            Automated monthly refresh. Health numbers come from the GitHub/GitLab API.
+
+            Cells to recheck:
+            ```
+            ${{ steps.stale.outputs.report }}
+            ```

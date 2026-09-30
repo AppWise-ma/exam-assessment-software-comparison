@@ -1,0 +1,27 @@
+{
+  "name": "open-source-exam-software-comparison",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "validate": "tsx scripts/validate.ts",
+    "lint:prose": "tsx scripts/lint-prose.ts",
+    "check": "npm run validate && npm run lint:prose",
+    "readme": "tsx scripts/build-readme.ts",
+    "readme:check": "tsx scripts/build-readme.ts --check",
+    "health": "tsx scripts/fetch-health.ts",
+    "typecheck": "tsc -p .",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.3",
+    "yaml": "^2.9.1"
+  }
+}

@@ -1,0 +1,43 @@
+name: Correction request
+description: Report a wrong or outdated value
+title: "Correction: <product> - <feature>"
+labels: [correction]
+body:
+  - type: input
+    id: product
+    attributes:
+      label: Product
+      placeholder: moodle
+    validations:
+      required: true
+  - type: input
+    id: feature
+    attributes:
+      label: Feature
+      description: As shown on the site or in data/products/<product>.yaml
+      placeholder: grading.regrade
+    validations:
+      required: true
+  - type: input
+    id: correct_value
+    attributes:
+      label: Correct value
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source
+      description: A public link that shows the correct value (docs, changelog, code).
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version it applies to
+  - type: checkboxes
+    id: affiliation
+    attributes:
+      label: Affiliation
+      options:
+        - label: I work on or for this product

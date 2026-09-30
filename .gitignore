@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.astro/
+site/dist/
+.remember/
+.env
+*.log
+.DS_Store
+Thumbs.db

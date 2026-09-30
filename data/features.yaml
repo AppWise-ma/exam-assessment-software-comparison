@@ -1,0 +1,285 @@
+# Feature taxonomy.
+#
+# Every product is assessed against these features. Each feature has a strict
+# definition of what earns "yes" so two reviewers reach the same answer.
+#
+# type:
+#   support  -> yes | partial | addon-paid | addon-free | no | unverified
+#   number   -> integer, or "unverified"
+#   text     -> short free text, or "unverified"
+#
+# "partial" always needs a note saying what is missing.
+# "addon-*" means an official or third-party extension is required; the note names it.
+# requires: hands-on  -> the value only counts if we observed it ourselves.
+
+areas:
+  - id: questions
+    label: Questions and question bank
+    features:
+      - id: question_type_count
+        label: Built-in question types
+        type: number
+        definition: >
+          Number of distinct question types available in a default install, without
+          add-ons. Count types as listed in the product's own question-type picker.
+      - id: question_bank
+        label: Reusable question bank
+        type: support
+        definition: >
+          Questions are stored independently of exams and can be reused across
+          several exams without copying.
+      - id: question_categories
+        label: Question categories / tags
+        type: support
+        definition: Questions can be grouped by category or tag and filtered by it.
+      - id: random_from_pool
+        label: Random draw from pool
+        type: support
+        definition: >
+          An exam can draw N random questions from a category or pool, so each
+          candidate gets a different set.
+      - id: math_formulas
+        label: Math formulas (LaTeX/MathML)
+        type: support
+        definition: Formulas can be written in question text and render for candidates.
+      - id: media_in_questions
+        label: Images, audio, video in questions
+        type: support
+        definition: Question text or answers can embed images, audio and video.
+
+  - id: delivery
+    label: Exam delivery and anti-cheat
+    features:
+      - id: time_limit
+        label: Exam time limit
+        type: support
+        definition: A whole-exam time limit that is enforced (submission closes when it ends).
+      - id: server_side_timer
+        label: Server-enforced timing
+        type: support
+        definition: >
+          The time limit is checked on the server. Changing the browser clock or
+          blocking JavaScript does not give the candidate more time.
+      - id: shuffle_questions
+        label: Shuffle questions and answers
+        type: support
+        definition: Question order and answer-option order can be randomized per attempt.
+      - id: attempt_limits
+        label: Attempt limits
+        type: support
+        definition: The number of attempts per candidate can be capped.
+      - id: scheduling_windows
+        label: Open/close windows
+        type: support
+        definition: An exam can open and close automatically at set dates and times.
+      - id: resume_after_disconnect
+        label: Resume after disconnect
+        type: support
+        definition: >
+          A candidate who loses connection or closes the browser can resume the same
+          attempt with previous answers kept.
+      - id: lockdown_browser
+        label: Lockdown browser integration
+        type: support
+        definition: >
+          The exam can require a lockdown browser (for example Safe Exam Browser) and
+          refuses access from a normal browser.
+      - id: ip_restriction
+        label: IP / network restriction
+        type: support
+        definition: Access to an exam can be limited to IP ranges.
+
+  - id: proctoring
+    label: Proctoring and live monitoring
+    features:
+      - id: live_monitor
+        label: Live monitoring dashboard
+        type: support
+        definition: >
+          Staff can see in real time who is taking an exam and their progress, without
+          reloading the page manually.
+      - id: invigilator_role
+        label: Dedicated invigilator role
+        type: support
+        definition: >
+          A role that can supervise exams (monitor, extend time, pause) without
+          being able to edit exams or grades.
+      - id: extend_time_live
+        label: Extend time during an attempt
+        type: support
+        definition: Staff can add time to a running attempt for one candidate.
+      - id: webcam_proctoring
+        label: Webcam proctoring
+        type: support
+        definition: Webcam capture during the exam, stored for review.
+      - id: activity_log
+        label: Per-attempt activity log
+        type: support
+        definition: >
+          A log per attempt with events such as focus lost, page reloads or answer
+          changes, visible to staff.
+
+  - id: grading
+    label: Grading and review
+    features:
+      - id: auto_grading
+        label: Automatic grading of closed questions
+        type: support
+        definition: Closed question types are scored automatically on submission.
+      - id: manual_grading
+        label: Manual grading of open answers
+        type: support
+        definition: Staff can grade essay / open answers with a score and comment.
+      - id: partial_credit
+        label: Partial credit
+        type: support
+        definition: Multi-answer questions can award part of the points.
+      - id: negative_marking
+        label: Negative marking
+        type: support
+        definition: Wrong answers can subtract points.
+      - id: regrade
+        label: Regrade after a question change
+        type: support
+        definition: >
+          After fixing a question's key, existing attempts can be regraded without
+          candidates retaking the exam.
+      - id: feedback_control
+        label: Feedback and review control
+        type: support
+        definition: >
+          The author controls when candidates see their score, correct answers and
+          feedback (immediately, after close date, never).
+
+  - id: certificates
+    label: Certificates
+    features:
+      - id: certificate_pdf
+        label: PDF certificates
+        type: support
+        definition: A certificate PDF is generated for candidates who pass.
+      - id: certificate_designer
+        label: Certificate template editor
+        type: support
+        definition: The certificate layout can be edited in the product without code.
+      - id: certificate_verification
+        label: Public certificate verification
+        type: support
+        definition: >
+          A third party can verify a certificate is genuine (for example by code, URL
+          or QR) on a public page.
+
+  - id: reporting
+    label: Reporting and analytics
+    features:
+      - id: results_export
+        label: Results export (CSV/XLSX)
+        type: support
+        definition: Attempt results can be exported to CSV or XLSX.
+      - id: item_analysis
+        label: Item analysis
+        type: support
+        definition: >
+          Per-question statistics such as facility index or discrimination, not only
+          the percent of correct answers.
+      - id: candidate_report
+        label: Per-candidate report
+        type: support
+        definition: Staff can open a report of one candidate's answers, scores and timing.
+
+  - id: standards
+    label: Standards and interoperability
+    features:
+      - id: qti_import
+        label: QTI import
+        type: support
+        definition: Import questions from IMS QTI (state the version in the note).
+      - id: qti_export
+        label: QTI export
+        type: support
+        definition: Export questions to IMS QTI (state the version in the note).
+      - id: other_import_formats
+        label: Other question import formats
+        type: text
+        definition: Other formats accepted for question import (GIFT, Aiken, CSV, Word...).
+      - id: lti
+        label: LTI
+        type: support
+        definition: Works as an LTI tool or consumer (state version and role in the note).
+      - id: scorm_xapi
+        label: SCORM / xAPI
+        type: support
+        definition: Exam results can be reported via SCORM or xAPI.
+      - id: rest_api
+        label: Public API
+        type: support
+        definition: A documented API to manage exams, users or results.
+
+  - id: access
+    label: Accessibility and languages
+    features:
+      - id: wcag_statement
+        label: Accessibility statement
+        type: support
+        definition: >
+          The project publishes an accessibility statement or WCAG conformance
+          report for the candidate-facing exam UI.
+      - id: keyboard_only_exam
+        label: Keyboard-only exam taking
+        type: support
+        definition: >
+          In our hands-on test, a candidate could complete an exam with keyboard only.
+        requires: hands-on
+      - id: rtl_support
+        label: Right-to-left languages
+        type: support
+        definition: The candidate UI renders correctly in an RTL language (Arabic, Hebrew).
+      - id: bundled_languages
+        label: Bundled UI languages
+        type: number
+        definition: Number of UI languages shipped or officially maintained.
+      - id: accommodations
+        label: Per-candidate accommodations
+        type: support
+        definition: Extra time or other adjustments can be set per candidate in advance.
+
+  - id: hosting
+    label: Hosting and requirements
+    features:
+      - id: platform_requirement
+        label: Required platform
+        type: text
+        definition: What must be installed first (Joomla 5, WordPress 6, Odoo 17, none...).
+      - id: runtime_stack
+        label: Runtime stack
+        type: text
+        definition: Language and database (for example PHP 8.2 + MySQL/MariaDB).
+      - id: docker_image
+        label: Official Docker image
+        type: support
+        definition: The project publishes an official Docker image.
+      - id: offline_mode
+        label: Offline / LAN exams
+        type: support
+        definition: Exams can run on a local network without internet access.
+      - id: mobile_friendly
+        label: Mobile-friendly exam UI
+        type: support
+        definition: In our hands-on test, an exam can be completed on a phone-sized screen.
+        requires: hands-on
+
+  - id: cost
+    label: License and cost
+    features:
+      - id: license_spdx
+        label: License
+        type: text
+        definition: SPDX identifier of the license the code is released under.
+      - id: price_model
+        label: Price model
+        type: text
+        definition: free, freemium, or paid (GPL). Put the lowest paid tier in the note.
+      - id: source_access
+        label: Source access
+        type: text
+        definition: Where the source is available (public repo URL, or "after purchase").

@@ -1,0 +1,28 @@
+# Copy to data/products/<slug>.yaml. Files starting with "_" are ignored.
+slug: product-slug
+name: Product Name
+platform: joomla # joomla | wordpress | odoo | standalone-web | desktop | mobile
+homepage: https://example.org
+repository: https://github.com/owner/repo # omit when source comes only after purchase
+version_tested: "1.0.0"
+affiliated: false # true only for products made by the maintainers of this repo
+summary: >
+  One or two plain sentences: what it is and who it suits.
+
+features:
+  questions.question_type_count:
+    value: 9
+    method: hands-on # hands-on | docs | changelog | source-code
+    source_url: https://example.org/docs/question-types
+    evidence: evidence/product-slug/1.0.0/question-types.png
+    verified_at: 2026-09-30
+
+  delivery.server_side_timer:
+    value: partial # yes | partial | addon-paid | addon-free | no | unverified
+    note: Checked on submit only; an open attempt keeps running past the limit.
+    method: hands-on
+    source_url: https://example.org/docs/timer
+    verified_at: 2026-09-30
+
+  proctoring.webcam_proctoring:
+    value: unverified # no source needed; shown as "Not checked"

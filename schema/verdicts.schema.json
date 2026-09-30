@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "verdicts.schema.json",
+  "title": "Verdicts",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["verdicts"],
+  "properties": {
+    "verdicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["area", "winners", "rationale", "decided_at"],
+        "properties": {
+          "area": { "type": "string" },
+          "winners": {
+            "description": "One slug, or several on a real tie. Empty when no product is good enough to recommend.",
+            "type": "array",
+            "items": { "type": "string" },
+            "uniqueItems": true
+          },
+          "rationale": {
+            "description": "Why, citing the feature cells that decided it. Plain language.",
+            "type": "string",
+            "minLength": 40
+          },
+          "runner_up": { "type": "string" },
+          "decided_at": { "type": "string", "format": "date" }
+        }
+      }
+    }
+  }
+}
