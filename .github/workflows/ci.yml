@@ -20,3 +20,4 @@ jobs:
       - run: npm run validate
       - run: npm run lint:prose
       - run: npm run readme:check
+      - run: npm run site:build

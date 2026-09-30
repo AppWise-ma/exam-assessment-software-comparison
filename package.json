@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.12"
   },
   "scripts": {
     "validate": "tsx scripts/validate.ts",
@@ -13,12 +13,18 @@
     "readme:check": "tsx scripts/build-readme.ts --check",
     "health": "tsx scripts/fetch-health.ts",
     "typecheck": "tsc -p .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "site:dev": "astro dev --root site",
+    "site:build": "astro build --root site",
+    "site:preview": "astro preview --root site"
   },
   "devDependencies": {
+    "@astrojs/sitemap": "^3.7.4",
     "@types/node": "^26.6.3",
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
+    "astro": "^7.3.5",
+    "marked": "^18.0.14",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vitest": "^5.0.3",

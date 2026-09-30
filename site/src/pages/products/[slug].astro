@@ -1,0 +1,120 @@
+---
+import type { GetStaticPaths } from "astro";
+import Base from "../../layouts/Base.astro";
+import CellValue from "../../components/CellValue.astro";
+import { absUrl, areas, loadHealth, productCoverage, products, url } from "../../lib/data.ts";
+import type { Product } from "../../../../scripts/lib/data.ts";
+import { PLATFORM_LABEL, REPO_URL, isAssessed, softwareApplicationLd } from "../../../../scripts/lib/site.ts";
+
+export const getStaticPaths = (() =>
+  products.map((p) => ({ params: { slug: p.slug }, props: { product: p } }))) satisfies GetStaticPaths;
+
+const { product } = Astro.props as { product: Product };
+const health = loadHealth(product.slug);
+const { assessed, total } = productCoverage(product);
+const platform = PLATFORM_LABEL[product.platform] ?? product.platform;
+const license = product.features["cost.license_spdx"];
+
+const title = `${product.name} ${product.version_tested}: exam features checked against sources`;
+const description = `${product.summary.trim()} ${assessed} of ${total} features checked, each linked to its source.`.slice(0, 300);
+const day = (iso: string | null | undefined) => (iso ? iso.slice(0, 10) : "unknown");
+---
+<Base
+  title={title}
+  description={description}
+  breadcrumbs={[
+    { name: platform, path: `platform/${product.platform}/` },
+    { name: product.name, path: `products/${product.slug}/` },
+  ]}
+  ld={[softwareApplicationLd(product, absUrl(`products/${product.slug}/`))]}
+>
+  <h1>{product.name}{product.affiliated && <span class="badge badge-ours">ours</span>}</h1>
+  <p class="lead">{product.summary.trim()}</p>
+  {product.affiliated && (
+    <p><strong>This product is made by the maintainers of this comparison.</strong></p>
+  )}
+
+  <dl class="facts">
+    <dt>Platform</dt>
+    <dd><a href={url(`platform/${product.platform}/`)}>{platform}</a></dd>
+    <dt>Version checked</dt>
+    <dd>{product.version_tested}</dd>
+    <dt>License</dt>
+    <dd><CellValue cell={license} /></dd>
+    <dt>Website</dt>
+    <dd><a href={product.homepage}>{product.homepage}</a></dd>
+    {product.repository && (
+      <>
+        <dt>Source code</dt>
+        <dd><a href={product.repository}>{product.repository}</a></dd>
+      </>
+    )}
+    <dt>Features checked</dt>
+    <dd>{assessed} of {total}</dd>
+    <dt>Data file</dt>
+    <dd><a href={`${REPO_URL}/blob/main/data/products/${product.slug}.yaml`}>data/products/{product.slug}.yaml</a></dd>
+  </dl>
+
+  <h2 id="health">Project health</h2>
+  {health ? (
+    <>
+      <dl class="facts">
+        <dt>Latest release</dt>
+        <dd>{health.latest_release ? `${health.latest_release.tag} (${day(health.latest_release.date)})` : "No release published on the repository"}</dd>
+        <dt>Last push</dt>
+        <dd>{day(health.last_push)}</dd>
+        <dt>Stars</dt>
+        <dd>{health.stars ?? "unknown"}</dd>
+        <dt>Open issues</dt>
+        <dd>{health.open_issues ?? "unknown"}</dd>
+        <dt>License reported by host</dt>
+        <dd>{health.license_spdx ?? "not detected"}</dd>
+        <dt>Archived</dt>
+        <dd>{health.archived === null ? "unknown" : health.archived ? "yes" : "no"}</dd>
+      </dl>
+      <p class="muted">
+        Fetched automatically from <a href={health.source}>{health.source}</a> on {day(health.fetched_at)}.
+        These numbers are not checked by hand.
+      </p>
+    </>
+  ) : (
+    <p class="muted">No health data: the source is not in a public GitHub or GitLab repository.</p>
+  )}
+
+  {areas.map((area) => (
+    <section aria-labelledby={`area-${area.id}`}>
+      <h2 id={`area-${area.id}`}>{area.label}</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Feature</th>
+              <th scope="col">Value</th>
+              <th scope="col">Note</th>
+              <th scope="col">Checked</th>
+              <th scope="col">How</th>
+            </tr>
+          </thead>
+          <tbody>
+            {area.features.map((f) => {
+              const cell = product.features[`${area.id}.${f.id}`];
+              const ok = isAssessed(cell);
+              return (
+                <tr>
+                  <th scope="row" title={f.definition.trim()}>{f.label}</th>
+                  <td><CellValue cell={cell} /></td>
+                  <td>{ok && cell.note}</td>
+                  <td>{ok && <time datetime={cell.verified_at}>{cell.verified_at}</time>}</td>
+                  <td>
+                    {ok && cell.method}
+                    {ok && cell.evidence && <> (<a href={`${REPO_URL}/blob/main/${cell.evidence}`}>screenshot</a>)</>}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  ))}
+</Base>

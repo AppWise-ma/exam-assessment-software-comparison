@@ -1,0 +1,61 @@
+---
+// One page per pair that includes Next Exams, e.g. /compare/next-exams-vs-moodle/.
+// No pages are emitted until data/products/next-exams.yaml exists.
+import type { GetStaticPaths } from "astro";
+import Base from "../../layouts/Base.astro";
+import AreaTable from "../../components/AreaTable.astro";
+import { absUrl, areas, bySlug, products, verdicts } from "../../lib/data.ts";
+import type { Product } from "../../../../scripts/lib/data.ts";
+import { comparePairs, softwareApplicationLd } from "../../../../scripts/lib/site.ts";
+
+export const getStaticPaths = (() =>
+  comparePairs(products.map((p) => p.slug)).map(({ pair, a, b }) => ({
+    params: { pair },
+    props: { a: bySlug.get(a)!, b: bySlug.get(b)! },
+  }))) satisfies GetStaticPaths;
+
+const { a, b } = Astro.props as { a: Product; b: Product };
+const path = `compare/${a.slug}-vs-${b.slug}/`;
+const title = `${a.name} vs ${b.name}: exam features compared with sources`;
+const description = `${a.name} and ${b.name} side by side on the same exam features. Each value links to its source and check date.`;
+const areaLabel = new Map(areas.map((x) => [x.id, x.label]));
+const relevant = verdicts.filter((v) => [a.slug, b.slug].some((s) => v.winners.includes(s) || v.runner_up === s));
+
+const itemList = {
+  "@type": "ItemList",
+  name: `${a.name} vs ${b.name}`,
+  numberOfItems: 2,
+  itemListElement: [a, b].map((p, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    url: absUrl(`products/${p.slug}/`),
+    item: softwareApplicationLd(p, absUrl(`products/${p.slug}/`)),
+  })),
+};
+---
+<Base
+  title={title}
+  description={description}
+  breadcrumbs={[{ name: `${a.name} vs ${b.name}`, path }]}
+  ld={[itemList]}
+>
+  <h1>{a.name} vs {b.name}</h1>
+  <p class="lead">
+    {a.affiliated && `${a.name} is made by the maintainers of this comparison. `}
+    Both products are checked against the same feature definitions. Hover a value to see when it was checked.
+  </p>
+  {relevant.length > 0 && (
+    <>
+      <h2 id="verdicts">Area verdicts</h2>
+      <ul>
+        {relevant.map((v) => (
+          <li>
+            <strong>{areaLabel.get(v.area) ?? v.area}:</strong>{" "}
+            {v.winners.map((w) => bySlug.get(w)?.name ?? w).join(", ") || "No clear winner"}. {v.rationale}
+          </li>
+        ))}
+      </ul>
+    </>
+  )}
+  {areas.map((area) => <AreaTable area={area} products={[a, b]} idPrefix="cmp" />)}
+</Base>

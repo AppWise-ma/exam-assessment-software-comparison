@@ -1,0 +1,29 @@
+---
+import type { Cell } from "../../../scripts/lib/data.ts";
+import { cellHref, isAssessed, isStale, valueClass, valueLabel } from "../../../scripts/lib/site.ts";
+import { TODAY } from "../lib/data.ts";
+
+interface Props {
+  cell: Cell | undefined;
+  /** id of a footnote holding the cell's note, when the note is shown elsewhere. */
+  noteId?: string;
+  noteNumber?: number;
+}
+
+const { cell, noteId, noteNumber } = Astro.props;
+const href = cellHref(cell);
+const checked = isAssessed(cell) ? `Verified ${cell.verified_at} (${cell.method})` : "";
+const stale = isStale(cell, TODAY);
+---
+{isAssessed(cell) ? (
+  <>
+    {href
+      ? <a class={valueClass(cell)} href={href} title={checked}>{valueLabel(cell)}</a>
+      : <span class={valueClass(cell)} title={checked}>{valueLabel(cell)}</span>}
+    <span class="visually-hidden">, {checked.toLowerCase()}</span>
+    {stale && <span class="badge" title={`Checked more than 180 days ago (${cell.verified_at})`}>stale</span>}
+    {noteId && <sup><a href={`#${noteId}`} aria-label={`Note ${noteNumber}`}>{noteNumber}</a></sup>}
+  </>
+) : (
+  <span class={valueClass(cell)}>Not checked</span>
+)}
