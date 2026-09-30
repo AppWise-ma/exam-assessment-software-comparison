@@ -1,0 +1,294 @@
+slug: tcexam
+name: TCExam
+platform: standalone-web
+homepage: https://tcexam.org
+repository: https://github.com/tecnickcom/tcexam
+version_tested: "17.2.8"
+affiliated: false
+summary: >
+  TCExam is a self-hosted PHP web application for computer-based exams, with a subject-based
+  question bank, randomized tests, IP and time-window restrictions, and printable OMR paper tests.
+  It suits schools and organizations that run exams on their own server.
+
+features:
+  questions.question_type_count:
+    value: 4
+    note: Counted the question-type radio buttons in the question editor - single answer, multiple answers, free answer, ordering.
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/admin/code/tce_edit_question.php#L997-L1033
+    verified_at: 2026-09-30
+
+  questions.question_bank:
+    value: yes
+    note: Questions belong to subjects (grouped in modules), and tests select subjects, so the same questions are reused by many tests.
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/install/mysql_db_structure.sql#L56-L83
+    verified_at: 2026-09-30
+
+  questions.question_categories:
+    value: yes
+    note: Two levels - modules contain subjects, and each question belongs to one subject.
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/install/mysql_db_structure.sql#L56-L83
+    verified_at: 2026-09-30
+
+  questions.random_from_pool:
+    value: yes
+    note: A test subject set picks tsubset_quantity questions of a given type and difficulty from selected subjects, ordered by RAND().
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/shared/code/tce_functions_test.php#L1359-L1502
+    verified_at: 2026-09-30
+
+  questions.math_formulas:
+    value: yes
+    note: README states LaTeX and MathML support; LaTeX rendering needs setup described in doc/LATEX.md.
+    method: docs
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/README.md#L93-L95
+    verified_at: 2026-09-30
+
+  questions.media_in_questions:
+    value: yes
+    note: README states the markup supports images and multimedia objects (audio and video).
+    method: docs
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/README.md#L93-L95
+    verified_at: 2026-09-30
+
+  delivery.time_limit:
+    value: yes
+    note: When server time passes start time plus test duration, the attempt is set to status 4 (locked for timeout).
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/shared/code/tce_functions_test.php#L479-L522
+    verified_at: 2026-09-30
+
+  delivery.server_side_timer:
+    value: yes
+    note: Timeout is computed from the server clock and the stored start time; answers are only saved when F_executeTest passes this check.
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/shared/code/tce_functions_test.php#L847-L920
+    verified_at: 2026-09-30
+
+  delivery.shuffle_questions:
+    value: yes
+    note: Test options for random question order and random answer order.
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/admin/code/tce_edit_test.php#L139-L167
+    verified_at: 2026-09-30
+
+  delivery.attempt_limits:
+    value: yes
+    note: test_repeatable sets how many times a test can be taken; one attempt by default.
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/shared/code/tce_functions_test.php#L880-L889
+    verified_at: 2026-09-30
+
+  delivery.scheduling_windows:
+    value: yes
+    note: A test can only be started between test_begin_time and test_end_time, checked against server time.
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/shared/code/tce_functions_test.php#L855-L868
+    verified_at: 2026-09-30
+
+  delivery.resume_after_disconnect:
+    value: yes
+    note: An unfinished attempt (status 1-3) continues on return; answers are stored per question on the server. The timer keeps running while away.
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/shared/code/tce_functions_test.php#L891-L905
+    verified_at: 2026-09-30
+
+  delivery.lockdown_browser:
+    value: unverified
+
+  delivery.ip_restriction:
+    value: yes
+    note: Each test has an IP range list (IPv4 wildcards and IPv4/IPv6 intervals); access from other addresses is refused.
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/shared/code/tce_functions_test.php#L281-L300
+    verified_at: 2026-09-30
+
+  proctoring.live_monitor:
+    value: unverified
+
+  proctoring.invigilator_role:
+    value: partial
+    note: No such role by default; the operator level edits tests and sees results. Per-page levels in admin/config/tce_auth.php can be changed by editing the file.
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/admin/config.default/tce_auth.php#L35-L135
+    verified_at: 2026-09-30
+
+  proctoring.extend_time_live:
+    value: yes
+    note: On the results page staff select candidates and add K_EXTEND_TIME_MINUTES (default 5) to their running attempt.
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/admin/code/tce_show_result_allusers.php#L175-L210
+    verified_at: 2026-09-30
+
+  proctoring.webcam_proctoring:
+    value: unverified
+
+  proctoring.activity_log:
+    value: partial
+    note: Per question it logs display time, last answer change, reaction time and client IP, shown in the per-candidate report. No focus-lost or reload events.
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/shared/code/tce_functions_test_stats.php#L1655-L1685
+    verified_at: 2026-09-30
+
+  grading.auto_grading:
+    value: yes
+    note: Single-answer, multiple-answer and ordering questions are scored when each answer is saved.
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/shared/code/tce_functions_test.php#L1777-L1830
+    verified_at: 2026-09-30
+
+  grading.manual_grading:
+    value: yes
+    note: The rating page lists free-answer responses and stores a score and a comment for each.
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/admin/code/tce_edit_rating.php#L127-L145
+    verified_at: 2026-09-30
+
+  grading.partial_credit:
+    value: yes
+    note: Test option test_mcma_partial_score gives partial score on multiple-answer questions.
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/admin/code/tce_edit_test.php#L205-L209
+    verified_at: 2026-09-30
+
+  grading.negative_marking:
+    value: yes
+    note: Points for wrong answers are set per test and may be negative (help text gives -0.1 as an example); multiplied by question difficulty.
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/shared/code/tce_functions_test.php#L1777-L1780
+    verified_at: 2026-09-30
+
+  grading.regrade:
+    value: unverified
+
+  grading.feedback_control:
+    value: partial
+    note: Per test, the author can allow or block candidates from seeing results and a detailed report. No option to release them only after the close date.
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/admin/code/tce_edit_test.php#L69-L79
+    verified_at: 2026-09-30
+
+  certificates.certificate_pdf:
+    value: unverified
+
+  certificates.certificate_designer:
+    value: unverified
+
+  certificates.certificate_verification:
+    value: unverified
+
+  reporting.results_export:
+    value: partial
+    note: Results export as TSV (tab-delimited text), XML and PDF. No CSV or XLSX, though TSV opens in spreadsheet programs.
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/admin/code/tce_tsv_result_allusers.php#L1-L20
+    verified_at: 2026-09-30
+
+  reporting.item_analysis:
+    value: partial
+    note: Per question and per answer option - recurrence, average points, correct/wrong/unanswered counts and answer time. No discrimination index.
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/admin/code/tce_xml_question_stats.php#L146-L200
+    verified_at: 2026-09-30
+
+  reporting.candidate_report:
+    value: yes
+    note: Shows each question with the candidate's answer, score, display and change times.
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/shared/code/tce_functions_test_stats.php#L1624-L1705
+    verified_at: 2026-09-30
+
+  standards.qti_import:
+    value: no
+    note: The question import form offers TCExam XML, TCExam TSV and an optional custom importer only.
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/admin/code/tce_import_questions.php#L97-L123
+    verified_at: 2026-09-30
+
+  standards.qti_export:
+    value: unverified
+
+  standards.other_import_formats:
+    value: TCExam XML, TCExam TSV, optional custom import filter
+    note: The custom importer appears only when K_ENABLE_CUSTOM_IMPORT is set in the config.
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/admin/code/tce_import_questions.php#L97-L123
+    verified_at: 2026-09-30
+
+  standards.lti:
+    value: unverified
+
+  standards.scorm_xapi:
+    value: unverified
+
+  standards.rest_api:
+    value: unverified
+
+  access.wcag_statement:
+    value: partial
+    note: The README states the interface follows WCAG 2.1 level AA. No separate statement or conformance report was found.
+    method: docs
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/README.md#L74-L77
+    verified_at: 2026-09-30
+
+  access.keyboard_only_exam:
+    value: unverified
+
+  access.rtl_support:
+    value: unverified
+
+  access.bundled_languages:
+    value: 26
+    note: README states 26 languages; the TMX file has 26 language codes.
+    method: docs
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/README.md#L186-L192
+    verified_at: 2026-09-30
+
+  access.accommodations:
+    value: unverified
+
+  hosting.platform_requirement:
+    value: none
+    method: docs
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/README.md#L154-L162
+    verified_at: 2026-09-30
+
+  hosting.runtime_stack:
+    value: PHP 8.2+ with MySQL/MariaDB, PostgreSQL or Oracle
+    note: Apache with mod_php recommended; Composer required.
+    method: docs
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/README.md#L154-L162
+    verified_at: 2026-09-30
+
+  hosting.docker_image:
+    value: partial
+    note: The repo ships a Dockerfile and docker-compose.yml to build and run locally. No prebuilt image found on Docker Hub or GHCR.
+    method: source-code
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/Dockerfile
+    verified_at: 2026-09-30
+
+  hosting.offline_mode:
+    value: unverified
+
+  hosting.mobile_friendly:
+    value: unverified
+
+  cost.license_spdx:
+    value: AGPL-3.0-or-later
+    method: docs
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/README.md#L248-L253
+    verified_at: 2026-09-30
+
+  cost.price_model:
+    value: free
+    method: docs
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/README.md#L248-L253
+    verified_at: 2026-09-30
+
+  cost.source_access:
+    value: https://github.com/tecnickcom/tcexam
+    method: docs
+    source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/README.md#L10-L15
+    verified_at: 2026-09-30

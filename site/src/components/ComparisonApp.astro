@@ -1,0 +1,197 @@
+---
+// Filterable comparison table. Renders the full table as plain HTML; the script adds filtering.
+import type { Product } from "../../../scripts/lib/data.ts";
+import { PLATFORM_LABEL, isAssessed, valueLabel } from "../../../scripts/lib/site.ts";
+import { areas, productCoverage, url } from "../lib/data.ts";
+import CellValue from "./CellValue.astro";
+
+interface Props {
+  products: Product[];
+}
+
+const { products } = Astro.props;
+const platforms = [...new Set(products.map((p) => p.platform))].sort();
+const featureCount = areas.reduce((n, a) => n + a.features.length, 0);
+---
+<div class="app" data-app>
+  <form class="toolbar" hidden aria-label="Filter the comparison" onsubmit="return false">
+    <fieldset class="products">
+      <legend>Products</legend>
+      {products.map((p) => (
+        <label class="chip">
+          <input type="checkbox" name="p" value={p.slug} data-platform={p.platform} checked />
+          {p.name}
+        </label>
+      ))}
+    </fieldset>
+    <div class="filters">
+      {platforms.length > 1 && (
+        <label>
+          Platform
+          <select name="platform">
+            <option value="">All</option>
+            {platforms.map((pl) => <option value={pl}>{PLATFORM_LABEL[pl] ?? pl}</option>)}
+          </select>
+        </label>
+      )}
+      <label>
+        Area
+        <select name="area">
+          <option value="">All areas</option>
+          {areas.map((a) => <option value={a.id}>{a.label}</option>)}
+        </select>
+      </label>
+      <label>
+        Feature
+        <input type="search" name="q" placeholder="e.g. timer, QTI" />
+      </label>
+      <label class="check"><input type="checkbox" name="diff" /> Only where products differ</label>
+      <label class="check"><input type="checkbox" name="checked" /> Hide rows nobody checked</label>
+      <button type="button" name="reset">Reset</button>
+    </div>
+    <p class="status" role="status" aria-live="polite"></p>
+  </form>
+
+  <div class="table-wrap app-table">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col" class="corner">Feature</th>
+          {products.map((p) => {
+            const { assessed } = productCoverage(p);
+            const lic = p.features["cost.license_spdx"];
+            const price = p.features["cost.price_model"];
+            return (
+              <th scope="col" data-p={p.slug} class:list={["prod", { "col-ours": p.affiliated }]}>
+                <a href={url(`products/${p.slug}/`)}>{p.name}</a>
+                <span class="meta">
+                  {PLATFORM_LABEL[p.platform] ?? p.platform}
+                  {isAssessed(lic) && <> · {String(lic.value)}</>}
+                  {isAssessed(price) && <> · {String(price.value)}</>}
+                </span>
+                <span class="meta">v{p.version_tested} · {assessed}/{featureCount} checked</span>
+              </th>
+            );
+          })}
+        </tr>
+      </thead>
+      <tbody>
+        {areas.map((area) => (
+          <>
+            <tr class="area-row" data-area-row={area.id}>
+              <th scope="colgroup" colspan={products.length + 1}><span>{area.label}</span></th>
+            </tr>
+            {area.features.map((f) => (
+              <tr data-feature data-area={area.id} data-search={`${f.label} ${f.definition}`.toLowerCase()}>
+                <th scope="row" title={f.definition.trim()}>{f.label}</th>
+                {products.map((p) => {
+                  const cell = p.features[`${area.id}.${f.id}`];
+                  return (
+                    <td data-p={p.slug} data-v={valueLabel(cell)} class:list={{ "col-ours": p.affiliated }}>
+                      <CellValue cell={cell} />
+                      {isAssessed(cell) && cell.note && (
+                        <details class="note">
+                          <summary>note</summary>
+                          <p>{cell.note}</p>
+                        </details>
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </>
+        ))}
+        <tr class="empty-row" hidden>
+          <td colspan={products.length + 1}>No feature matches these filters.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  const app = document.querySelector<HTMLElement>("[data-app]");
+  if (app) {
+    const form = app.querySelector<HTMLFormElement>(".toolbar")!;
+    const table = app.querySelector("table")!;
+    const boxes = [...form.querySelectorAll<HTMLInputElement>('input[name="p"]')];
+    const platform = form.querySelector<HTMLSelectElement>('select[name="platform"]');
+    const area = form.querySelector<HTMLSelectElement>('select[name="area"]')!;
+    const q = form.querySelector<HTMLInputElement>('input[name="q"]')!;
+    const diff = form.querySelector<HTMLInputElement>('input[name="diff"]')!;
+    const checkedOnly = form.querySelector<HTMLInputElement>('input[name="checked"]')!;
+    const status = form.querySelector<HTMLElement>(".status")!;
+    const rows = [...table.querySelectorAll<HTMLTableRowElement>("tr[data-feature]")];
+    const areaRows = [...table.querySelectorAll<HTMLTableRowElement>("tr[data-area-row]")];
+    const emptyRow = table.querySelector<HTMLTableRowElement>(".empty-row")!;
+    const productCells = [...table.querySelectorAll<HTMLElement>("[data-p]")];
+
+    // Restore state from the URL so a filtered view can be shared.
+    const params = new URLSearchParams(location.search);
+    const wanted = params.get("p")?.split(",").filter(Boolean);
+    if (wanted?.length) boxes.forEach((b) => (b.checked = wanted.includes(b.value)));
+    if (platform && params.get("platform")) platform.value = params.get("platform")!;
+    if (params.get("area")) area.value = params.get("area")!;
+    q.value = params.get("q") ?? "";
+    diff.checked = params.get("diff") === "1";
+    checkedOnly.checked = params.get("checked") === "1";
+
+    function apply() {
+      const selected = new Set(boxes.filter((b) => b.checked).map((b) => b.value));
+      productCells.forEach((c) => (c.hidden = !selected.has(c.dataset.p!)));
+      const term = q.value.trim().toLowerCase();
+      const visibleAreas = new Set<string>();
+      let shown = 0;
+      for (const row of rows) {
+        const values = [...row.querySelectorAll<HTMLElement>("td[data-p]")].filter((c) => !c.hidden).map((c) => c.dataset.v);
+        let ok = (!area.value || row.dataset.area === area.value) && (!term || row.dataset.search!.includes(term));
+        if (ok && diff.checked) ok = new Set(values).size > 1;
+        if (ok && checkedOnly.checked) ok = values.some((v) => v !== "Not checked");
+        row.hidden = !ok;
+        if (ok) {
+          shown++;
+          visibleAreas.add(row.dataset.area!);
+        }
+      }
+      areaRows.forEach((r) => (r.hidden = !visibleAreas.has(r.dataset.areaRow!)));
+      emptyRow.hidden = shown > 0;
+      status.textContent = `${shown} of ${rows.length} features, ${selected.size} of ${boxes.length} products`;
+
+      const next = new URLSearchParams();
+      if (selected.size !== boxes.length) next.set("p", [...selected].join(","));
+      if (platform?.value) next.set("platform", platform.value);
+      if (area.value) next.set("area", area.value);
+      if (term) next.set("q", term);
+      if (diff.checked) next.set("diff", "1");
+      if (checkedOnly.checked) next.set("checked", "1");
+      const qs = next.toString();
+      history.replaceState(null, "", qs ? `?${qs}` : location.pathname);
+    }
+
+    platform?.addEventListener("change", () => {
+      boxes.forEach((b) => (b.checked = !platform.value || b.dataset.platform === platform.value));
+      apply();
+    });
+    boxes.forEach((b) =>
+      b.addEventListener("change", () => {
+        if (platform) platform.value = "";
+        apply();
+      }),
+    );
+    [area, diff, checkedOnly].forEach((el) => el.addEventListener("change", apply));
+    q.addEventListener("input", apply);
+    form.querySelector<HTMLButtonElement>('button[name="reset"]')!.addEventListener("click", () => {
+      boxes.forEach((b) => (b.checked = true));
+      if (platform) platform.value = "";
+      area.value = "";
+      q.value = "";
+      diff.checked = false;
+      checkedOnly.checked = false;
+      apply();
+    });
+
+    form.hidden = false;
+    apply();
+  }
+</script>

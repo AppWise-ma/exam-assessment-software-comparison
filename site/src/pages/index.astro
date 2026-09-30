@@ -1,0 +1,50 @@
+---
+import Base from "../layouts/Base.astro";
+import ComparisonApp from "../components/ComparisonApp.astro";
+import { absUrl, areas, bySlug, products, url, verdicts } from "../lib/data.ts";
+import { softwareApplicationLd } from "../../../scripts/lib/site.ts";
+
+const names = products.map((p) => p.name);
+const title = products.length
+  ? `Open-source exam software compared: ${products.length} products, every value sourced`
+  : "Open-source exam software comparison";
+const description = products.length
+  ? `Feature-by-feature comparison of ${names.join(", ")}. Filter by platform and area; each value links to its source.`
+  : "A sourced comparison of open-source exam, quiz and assessment software.";
+
+const itemList = {
+  "@type": "ItemList",
+  name: "Open-source exam software",
+  numberOfItems: products.length,
+  itemListElement: products.map((p, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    url: absUrl(`products/${p.slug}/`),
+    item: softwareApplicationLd(p, absUrl(`products/${p.slug}/`)),
+  })),
+};
+const areaLabel = new Map(areas.map((a) => [a.id, a.label]));
+---
+<Base title={title} description={description} ld={[itemList]} wide>
+  <h1>Compare open-source exam software</h1>
+  <p class="lead">
+    Pick products and filter by area. Click a value to open its source; hover it for the date it was checked.{" "}
+    <a href={url("methodology/")}>How values are collected</a>.
+  </p>
+
+  {products.length === 0 ? <p>No products published yet.</p> : <ComparisonApp products={products} />}
+
+  {verdicts.length > 0 && (
+    <>
+      <h2 id="verdicts">Best in each area</h2>
+      <ul>
+        {verdicts.map((v) => (
+          <li>
+            <strong>{areaLabel.get(v.area) ?? v.area}:</strong>{" "}
+            {v.winners.map((w) => bySlug.get(w)?.name ?? w).join(", ") || "No clear winner"}. {v.rationale}
+          </li>
+        ))}
+      </ul>
+    </>
+  )}
+</Base>

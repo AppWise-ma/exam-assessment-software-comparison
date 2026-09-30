@@ -1,0 +1,44 @@
+---
+import type { GetStaticPaths } from "astro";
+import Base from "../../layouts/Base.astro";
+import ComparisonApp from "../../components/ComparisonApp.astro";
+import { absUrl, products } from "../../lib/data.ts";
+import type { Product } from "../../../../scripts/lib/data.ts";
+import { PLATFORM_LABEL, softwareApplicationLd } from "../../../../scripts/lib/site.ts";
+
+export const getStaticPaths = (() => {
+  const platforms = [...new Set(products.map((p) => p.platform))].sort();
+  return platforms.map((platform) => ({
+    params: { platform },
+    props: { platform, items: products.filter((p) => p.platform === platform) },
+  }));
+}) satisfies GetStaticPaths;
+
+const { platform, items } = Astro.props as { platform: string; items: Product[] };
+const label = PLATFORM_LABEL[platform] ?? platform;
+const heading = platform === "standalone-web" ? "Standalone open-source exam web apps" : `Open-source exam software for ${label}`;
+const title = `${heading} compared (${items.length} ${items.length === 1 ? "product" : "products"})`;
+const description = `${items.map((p) => p.name).join(", ")}: exam and quiz features compared, each value linked to its source.`;
+
+const itemList = {
+  "@type": "ItemList",
+  name: heading,
+  numberOfItems: items.length,
+  itemListElement: items.map((p, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    url: absUrl(`products/${p.slug}/`),
+    item: softwareApplicationLd(p, absUrl(`products/${p.slug}/`)),
+  })),
+};
+---
+<Base
+  title={title}
+  description={description}
+  breadcrumbs={[{ name: label, path: `platform/${platform}/` }]}
+  ld={[itemList]}
+  wide
+>
+  <h1>{heading}</h1>
+  <ComparisonApp products={items} />
+</Base>

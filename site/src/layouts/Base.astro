@@ -1,0 +1,76 @@
+---
+import "../styles/global.css";
+import { absUrl, disclosureHtml, products, url } from "../lib/data.ts";
+import { PLATFORM_LABEL, REPO_URL, breadcrumbLd, jsonLd } from "../../../scripts/lib/site.ts";
+
+interface Props {
+  title: string;
+  description: string;
+  /** Trail after "Home". Each path is relative to the site base. */
+  breadcrumbs?: { name: string; path: string }[];
+  /** JSON-LD objects without @context. */
+  ld?: Record<string, unknown>[];
+  /** Full-width main area for the comparison app. */
+  wide?: boolean;
+}
+
+const { title, description, breadcrumbs = [], ld = [], wide = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const trail = [{ name: "Home", path: "" }, ...breadcrumbs];
+const structured = breadcrumbs.length
+  ? [...ld, breadcrumbLd(trail.map((c) => ({ name: c.name, url: absUrl(c.path) })))]
+  : ld;
+const platforms = [...new Set(products.map((p) => p.platform))].sort();
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3E%3Crect width=%2716%27 height=%2716%27 rx=%273%27 fill=%27%230b57c2%27/%3E%3Cpath d=%27M4 8.5l2.5 2.5L12 5%27 stroke=%27white%27 stroke-width=%272%27 fill=%27none%27/%3E%3C/svg%3E" />
+    <link rel="sitemap" href={url("sitemap-index.xml")} />
+    {structured.map((item) => <script type="application/ld+json" set:html={jsonLd(item)} />)}
+  </head>
+  <body>
+    <p class="disclosure" set:html={disclosureHtml} />
+    <header class:list={["site-header", { wide }]}>
+      <a class="site-name" href={url()}>Open-source exam software comparison</a>
+      <nav aria-label="Main">
+        <ul>
+          {platforms.map((p) => <li><a href={url(`platform/${p}/`)}>{PLATFORM_LABEL[p] ?? p}</a></li>)}
+          <li><a href={url("methodology/")}>Methodology</a></li>
+          <li><a href={REPO_URL}>GitHub</a></li>
+        </ul>
+      </nav>
+    </header>
+    {breadcrumbs.length > 0 && (
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <ol>
+          {trail.map((c, i) =>
+            i === trail.length - 1
+              ? <li aria-current="page">{c.name}</li>
+              : <li><a href={url(c.path)}>{c.name}</a></li>,
+          )}
+        </ol>
+      </nav>
+    )}
+    <main class:list={{ wide }}>
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <p>
+        Data and text: <a href={`${REPO_URL}/blob/main/LICENSE-DATA`}>CC BY 4.0</a>.
+        Code: <a href={`${REPO_URL}/blob/main/LICENSE`}>MIT</a>.
+        Found a wrong value? <a href={`${REPO_URL}/issues/new?template=correction.yml`}>Open a correction</a>.
+      </p>
+    </footer>
+  </body>
+</html>

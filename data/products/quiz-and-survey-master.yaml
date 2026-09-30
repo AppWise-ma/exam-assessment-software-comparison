@@ -1,0 +1,279 @@
+slug: quiz-and-survey-master
+name: Quiz and Survey Master
+platform: wordpress
+homepage: https://quizandsurveymaster.com
+repository: https://github.com/QuizandSurveyMaster/quiz_master_next
+version_tested: "11.2.7"
+affiliated: false
+summary: >
+  Free WordPress plugin for quizzes, surveys and exams with points grading, timers and attempt limits.
+  Proctoring, results export, save and resume and most reporting come as paid add-ons.
+
+# Source links point to commit 9aeaca6 on GitHub, the 11.2.7 release merge (2026-09-24).
+# Its PHP files match the wordpress.org 11.2.7 zip.
+features:
+  questions.question_type_count:
+    value: 15
+    note: Counted register_question_type calls in the free plugin, including Text/HTML Section, Captcha and Opt-in. Three "Advanced (PRO)" placeholders (Matching Pairs, Radio Grid, Checkbox Grid) not counted.
+    method: source-code
+    source_url: https://github.com/QuizandSurveyMaster/quiz_master_next/blob/9aeaca6a06d358bae69200905912fb6f02b1bd0e/php/question-types.php#L53-L291
+    verified_at: 2026-09-30
+
+  questions.question_bank:
+    value: partial
+    note: Question Bank (since 11.0) stores questions outside quizzes, but importing copies the question into each quiz. A Link option keeps one synced row per quiz rather than a single shared item.
+    method: docs
+    source_url: https://quizandsurveymaster.com/docs/advanced-topics/centralized-question-bank/
+    verified_at: 2026-09-30
+
+  questions.question_categories:
+    value: "yes"
+    note: Questions can have several categories; the Question Bank filters by category.
+    method: docs
+    source_url: https://quizandsurveymaster.com/docs/advanced-topics/centralized-question-bank/
+    verified_at: 2026-09-30
+
+  questions.random_from_pool:
+    value: "yes"
+    note: With question randomization on, a maximum question limit and a per-category limit draw random questions (ORDER BY rand) from the quiz's questions.
+    method: source-code
+    source_url: https://github.com/QuizandSurveyMaster/quiz_master_next/blob/9aeaca6a06d358bae69200905912fb6f02b1bd0e/php/classes/class-qmn-quiz-manager.php#L981-L1003
+    verified_at: 2026-09-30
+
+  questions.math_formulas:
+    value: "yes"
+    note: MathJax is bundled; TeX/LaTeX in questions is on unless the quiz option disables it.
+    method: source-code
+    source_url: https://github.com/QuizandSurveyMaster/quiz_master_next/blob/9aeaca6a06d358bae69200905912fb6f02b1bd0e/php/classes/class-qsm-install.php#L164-L170
+    verified_at: 2026-09-30
+
+  questions.media_in_questions:
+    value: "yes"
+    note: Question text uses the WordPress visual editor, which inserts images, audio and video from the Media Library.
+    method: docs
+    source_url: https://quizandsurveymaster.com/docs/creating-quizzes-and-surveys/adding-and-editing-questions/
+    verified_at: 2026-09-30
+
+  delivery.time_limit:
+    value: "yes"
+    note: Enforced in the browser. At zero the questions freeze; an option submits the quiz automatically.
+    method: docs
+    source_url: https://quizandsurveymaster.com/docs/creating-quizzes-and-surveys/adding-a-timer-to-your-quiz-or-survey/
+    verified_at: 2026-09-30
+
+  delivery.server_side_timer:
+    value: "no"
+    note: The submit handler does not compare elapsed time with the quiz timer. Its end-date check uses the time sent by the browser (currentuserTime).
+    method: source-code
+    source_url: https://github.com/QuizandSurveyMaster/quiz_master_next/blob/9aeaca6a06d358bae69200905912fb6f02b1bd0e/php/classes/class-qmn-quiz-manager.php#L2188-L2222
+    verified_at: 2026-09-30
+
+  delivery.shuffle_questions:
+    value: "yes"
+    note: Randomization mode can shuffle questions, answers and pages on each load.
+    method: docs
+    source_url: https://quizandsurveymaster.com/docs/creating-quizzes-and-surveys/basic-settings/
+    verified_at: 2026-09-30
+
+  delivery.attempt_limits:
+    value: "yes"
+    note: Checked on submit by user ID for logged-in users, by IP address for guests, or by email when that option is set.
+    method: source-code
+    source_url: https://github.com/QuizandSurveyMaster/quiz_master_next/blob/9aeaca6a06d358bae69200905912fb6f02b1bd0e/php/classes/class-qmn-quiz-manager.php#L2238-L2262
+    verified_at: 2026-09-30
+
+  delivery.scheduling_windows:
+    value: "yes"
+    note: Start and end dates are checked against server time before the quiz is shown.
+    method: source-code
+    source_url: https://github.com/QuizandSurveyMaster/quiz_master_next/blob/9aeaca6a06d358bae69200905912fb6f02b1bd0e/php/classes/class-qmn-quiz-manager.php#L3919-L3969
+    verified_at: 2026-09-30
+
+  delivery.resume_after_disconnect:
+    value: addon-paid
+    note: Save and Resume add-on (Plus tier and up). Server-side for logged-in users, cookie for guests.
+    method: docs
+    source_url: https://quizandsurveymaster.com/docs/add-ons/save-and-resume/
+    verified_at: 2026-09-30
+
+  delivery.lockdown_browser:
+    value: unverified
+
+  delivery.ip_restriction:
+    value: unverified
+
+  proctoring.live_monitor:
+    value: unverified
+
+  proctoring.invigilator_role:
+    value: unverified
+
+  proctoring.extend_time_live:
+    value: unverified
+
+  proctoring.webcam_proctoring:
+    value: addon-paid
+    note: Quiz Proctor add-on takes webcam pictures at set intervals, shown in the result's proctor report.
+    method: docs
+    source_url: https://quizandsurveymaster.com/docs/add-ons/quiz-proctor/
+    verified_at: 2026-09-30
+
+  proctoring.activity_log:
+    value: addon-paid
+    note: Quiz Proctor add-on logs tab switches and full-screen exits per result, in time order.
+    method: docs
+    source_url: https://quizandsurveymaster.com/docs/add-ons/quiz-proctor/
+    verified_at: 2026-09-30
+
+  grading.auto_grading:
+    value: "yes"
+    note: Choice questions are scored on submission (correct/incorrect and per-answer points).
+    method: source-code
+    source_url: https://github.com/QuizandSurveyMaster/quiz_master_next/blob/9aeaca6a06d358bae69200905912fb6f02b1bd0e/php/classes/question-types/class-question-review-choice.php#L30-L54
+    verified_at: 2026-09-30
+
+  grading.manual_grading:
+    value: unverified
+
+  grading.partial_credit:
+    value: "yes"
+    note: With the Points grading system, the points of each selected answer are added up.
+    method: source-code
+    source_url: https://github.com/QuizandSurveyMaster/quiz_master_next/blob/9aeaca6a06d358bae69200905912fb6f02b1bd0e/php/classes/question-types/class-question-review-choice.php#L30-L54
+    verified_at: 2026-09-30
+
+  grading.negative_marking:
+    value: "yes"
+    note: Answer points are saved with floatval and summed, so a negative value on a wrong answer subtracts points. Not described in the docs.
+    method: source-code
+    source_url: https://github.com/QuizandSurveyMaster/quiz_master_next/blob/9aeaca6a06d358bae69200905912fb6f02b1bd0e/php/classes/question-types/class-question-review-choice.php#L41
+    verified_at: 2026-09-30
+
+  grading.regrade:
+    value: unverified
+
+  grading.feedback_control:
+    value: partial
+    note: Correct-answer display can be set to always, only if correct, or never, and the results page is a template. No setting to hold results until a close date is documented.
+    method: docs
+    source_url: https://quizandsurveymaster.com/docs/creating-quizzes-and-surveys/basic-settings/
+    verified_at: 2026-09-30
+
+  certificates.certificate_pdf:
+    value: addon-free
+    note: Certificate add-on (free, included in all tiers) creates a PDF for users who pass.
+    method: docs
+    source_url: https://quizandsurveymaster.com/docs/add-ons/certificate/
+    verified_at: 2026-09-30
+
+  certificates.certificate_designer:
+    value: addon-free
+    note: Certificate add-on. Title, content, logo and background set through form fields, with templates and preview; not drag-and-drop.
+    method: docs
+    source_url: https://quizandsurveymaster.com/docs/add-ons/certificate/
+    verified_at: 2026-09-30
+
+  certificates.certificate_verification:
+    value: addon-free
+    note: Certificate add-on. The quiz_expiry_check shortcode lets anyone enter a certificate ID on a page to check that it is valid.
+    method: docs
+    source_url: https://quizandsurveymaster.com/docs/add-ons/certificate/
+    verified_at: 2026-09-30
+
+  reporting.results_export:
+    value: addon-paid
+    note: Export Results add-on (CSV and PDF), included from the Pro tier. The free results tab shows an upsell.
+    method: docs
+    source_url: https://quizandsurveymaster.com/docs/add-ons/export-results/
+    verified_at: 2026-09-30
+
+  reporting.item_analysis:
+    value: unverified
+
+  reporting.candidate_report:
+    value: "yes"
+    note: View Results on a result shows score, points, time to complete, user details and each response.
+    method: docs
+    source_url: https://quizandsurveymaster.com/docs/advanced-topics/quiz-results/
+    verified_at: 2026-09-30
+
+  standards.qti_import:
+    value: unverified
+
+  standards.qti_export:
+    value: unverified
+
+  standards.other_import_formats:
+    value: CSV (Question Bank bulk import, free); JSON and CSV via the paid Export & Import add-on
+    method: source-code
+    source_url: https://github.com/QuizandSurveyMaster/quiz_master_next/blob/9aeaca6a06d358bae69200905912fb6f02b1bd0e/php/admin/question-bank-page.php#L348-L365
+    verified_at: 2026-09-30
+
+  standards.lti:
+    value: unverified
+
+  standards.scorm_xapi:
+    value: unverified
+
+  standards.rest_api:
+    value: "yes"
+    note: Built-in REST API with API key; endpoints read quizzes, questions and results and submit results.
+    method: docs
+    source_url: https://quizandsurveymaster.com/docs/developer/quiz-survey-master-api/
+    verified_at: 2026-09-30
+
+  access.wcag_statement:
+    value: unverified
+
+  access.keyboard_only_exam:
+    value: unverified
+
+  access.rtl_support:
+    value: unverified
+
+  access.bundled_languages:
+    value: unverified
+
+  access.accommodations:
+    value: unverified
+
+  hosting.platform_requirement:
+    value: WordPress 5.0+ (tested up to 7.1)
+    method: source-code
+    source_url: https://github.com/QuizandSurveyMaster/quiz_master_next/blob/9aeaca6a06d358bae69200905912fb6f02b1bd0e/readme.txt#L4-L5
+    verified_at: 2026-09-30
+
+  hosting.runtime_stack:
+    value: PHP 5.4+ with MySQL/MariaDB (WordPress database)
+    method: source-code
+    source_url: https://github.com/QuizandSurveyMaster/quiz_master_next/blob/9aeaca6a06d358bae69200905912fb6f02b1bd0e/readme.txt#L6
+    verified_at: 2026-09-30
+
+  hosting.docker_image:
+    value: unverified
+
+  hosting.offline_mode:
+    value: unverified
+
+  hosting.mobile_friendly:
+    value: unverified
+
+  cost.license_spdx:
+    value: GPL-2.0-only
+    note: Plugin header and readme say "License GPLv2" with no "or later" clause.
+    method: source-code
+    source_url: https://github.com/QuizandSurveyMaster/quiz_master_next/blob/9aeaca6a06d358bae69200905912fb6f02b1bd0e/mlw_quizmaster2.php#L2-L13
+    verified_at: 2026-09-30
+
+  cost.price_model:
+    value: freemium
+    note: Core plugin free on wordpress.org. Add-on bundles start at Basic, $149/year for 1 site.
+    method: docs
+    source_url: https://quizandsurveymaster.com/pricing/
+    verified_at: 2026-09-30
+
+  cost.source_access:
+    value: https://github.com/QuizandSurveyMaster/quiz_master_next (also wordpress.org SVN, quiz-master-next)
+    method: source-code
+    source_url: https://github.com/QuizandSurveyMaster/quiz_master_next
+    verified_at: 2026-09-30

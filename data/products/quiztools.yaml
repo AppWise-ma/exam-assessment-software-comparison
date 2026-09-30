@@ -1,0 +1,268 @@
+slug: quiztools
+name: QuizTools
+platform: joomla
+homepage: https://extensions.joomla.org/extension/living/education-a-culture/quiztools/
+repository: https://github.com/fsvblr/quiztools
+version_tested: "1.5.0"
+affiliated: false
+summary: >
+  Free GPL quiz component for Joomla 5.4 and 6 with six plugin-based question types, a shared
+  question pool with random draws, learning paths and paid access through HikaShop or VirtueMart.
+
+features:
+  questions.question_type_count:
+    value: 6
+    note: Counted the question-type plugins (group "quiztools") installed by the package - Fill in the Blank, Boilerplate, Hotspots Multiple, Multiple Choice, Multiple Response, True/False. Boilerplate is a text block, not a scored question.
+    method: source-code
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/pkg_quiztools.xml#L16-L22
+    verified_at: 2026-09-30
+
+  questions.question_bank:
+    value: partial
+    note: A question belongs either to one quiz or to the shared "Questions Pool". Pool questions are reused only through random draws; a fixed question list cannot be shared between quizzes without copying.
+    method: source-code
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/com_quiztools/admin/forms/question.xml#L13-L21
+    verified_at: 2026-09-30
+
+  questions.question_categories:
+    value: yes
+    method: source-code
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/com_quiztools/admin/forms/filter_questions.xml#L46-L55
+    verified_at: 2026-09-30
+
+  questions.random_from_pool:
+    value: yes
+    note: A quiz can draw N random pool questions, or N per selected category; the drawn set is stored per attempt.
+    method: source-code
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/com_quiztools/site/src/Model/AjaxQuizModel.php#L206-L218
+    verified_at: 2026-09-30
+
+  questions.math_formulas:
+    value: unverified
+
+  questions.media_in_questions:
+    value: partial
+    note: Question text uses the Joomla editor, so images can be inserted. The README says audio and video need third-party content plugins.
+    method: docs
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/README.md#L50-L53
+    verified_at: 2026-09-30
+
+  delivery.time_limit:
+    value: yes
+    note: The time limit is only available when "Allow users to continue unfinished quiz" is set to No. The browser finishes the quiz at zero and the server closes late attempts.
+    method: source-code
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/com_quiztools/admin/forms/quiz.xml#L83-L131
+    verified_at: 2026-09-30
+
+  delivery.server_side_timer:
+    value: partial
+    note: Each submit compares server UTC time with the stored start time and closes an overdue attempt as failed. The late answer is still saved and scored before the check.
+    method: source-code
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/com_quiztools/site/src/Model/AjaxQuizModel.php#L429-L463
+    verified_at: 2026-09-30
+
+  delivery.shuffle_questions:
+    value: yes
+    note: Question order is shuffled per attempt (quiz setting). Answer order is shuffled by a per-question option in Multiple Choice, Multiple Response and Fill in the Blank.
+    method: source-code
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/com_quiztools/site/src/Model/AjaxQuizModel.php#L223-L225
+    verified_at: 2026-09-30
+
+  delivery.attempt_limits:
+    value: yes
+    note: Applies to free-access quizzes, with an optional reset period. Paid quizzes are controlled by subscriptions.
+    method: source-code
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/com_quiztools/admin/src/Service/AccessService.php#L134-L140
+    verified_at: 2026-09-30
+
+  delivery.scheduling_windows:
+    value: unverified
+
+  delivery.resume_after_disconnect:
+    value: yes
+    note: With "Allow users to continue" on (the default), the unfinished attempt and saved answers are reloaded. Guests are matched by cookie. This option cannot be combined with a time limit.
+    method: source-code
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/com_quiztools/site/src/Model/AjaxQuizModel.php#L71-L104
+    verified_at: 2026-09-30
+
+  delivery.lockdown_browser:
+    value: unverified
+
+  delivery.ip_restriction:
+    value: unverified
+
+  proctoring.live_monitor:
+    value: unverified
+
+  proctoring.invigilator_role:
+    value: unverified
+
+  proctoring.extend_time_live:
+    value: unverified
+
+  proctoring.webcam_proctoring:
+    value: unverified
+
+  proctoring.activity_log:
+    value: unverified
+
+  grading.auto_grading:
+    value: yes
+    note: Each question-type plugin scores the answer when it is saved.
+    method: source-code
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/plg_quiztools_mresponse/src/PluginTraits/QuestionSaveAnswer.php#L106-L137
+    verified_at: 2026-09-30
+
+  grading.manual_grading:
+    value: "no"
+    note: None of the six question types takes an open or essay answer, so there is nothing to grade by hand.
+    method: docs
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/README.md#L29-L35
+    verified_at: 2026-09-30
+
+  grading.partial_credit:
+    value: yes
+    note: Multiple Response awards points in proportion to the correct options selected.
+    method: source-code
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/plg_quiztools_mresponse/src/PluginTraits/QuestionSaveAnswer.php#L122-L137
+    verified_at: 2026-09-30
+
+  grading.negative_marking:
+    value: "no"
+    note: Question and option points have a minimum of 0. The "penalty" setting only reduces points for repeated attempts at a question and cannot go below zero.
+    method: source-code
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/com_quiztools/admin/forms/question.xml#L66-L85
+    verified_at: 2026-09-30
+
+  grading.regrade:
+    value: unverified
+
+  grading.feedback_control:
+    value: partial
+    note: The author can turn per-question feedback, feedback on the final page and showing answers with the result on or off. There is no option to release them at a later date.
+    method: source-code
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/com_quiztools/admin/forms/quiz.xml#L338-L411
+    verified_at: 2026-09-30
+
+  certificates.certificate_pdf:
+    value: partial
+    note: A certificate is generated for users who pass, but as a PNG image, not a PDF.
+    method: source-code
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/com_quiztools/admin/src/Controller/CertificateController.php#L258-L291
+    verified_at: 2026-09-30
+
+  certificates.certificate_designer:
+    value: yes
+    note: Admin form with a background image and text fields placed by X/Y position, with font, size and colour.
+    method: source-code
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/com_quiztools/admin/forms/certificate.xml#L29-L128
+    verified_at: 2026-09-30
+
+  certificates.certificate_verification:
+    value: unverified
+
+  reporting.results_export:
+    value: yes
+    note: Results list exports to XLSX.
+    method: source-code
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/com_quiztools/admin/src/Controller/ResultsController.php#L60-L110
+    verified_at: 2026-09-30
+
+  reporting.item_analysis:
+    value: unverified
+
+  reporting.candidate_report:
+    value: yes
+    note: Admin result page shows date, time spent, scores and each question with the user's and the correct answer.
+    method: source-code
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/com_quiztools/admin/tmpl/result/default_header.php#L20-L60
+    verified_at: 2026-09-30
+
+  standards.qti_import:
+    value: "no"
+    note: Question import and export are listed on the roadmap, not in the current release.
+    method: docs
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/README.md#L87-L93
+    verified_at: 2026-09-30
+
+  standards.qti_export:
+    value: "no"
+    note: Question import and export are listed on the roadmap, not in the current release.
+    method: docs
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/README.md#L87-L93
+    verified_at: 2026-09-30
+
+  standards.other_import_formats:
+    value: None (question import is on the roadmap)
+    method: docs
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/README.md#L87-L93
+    verified_at: 2026-09-30
+
+  standards.lti:
+    value: unverified
+
+  standards.scorm_xapi:
+    value: unverified
+
+  standards.rest_api:
+    value: unverified
+
+  access.wcag_statement:
+    value: unverified
+
+  access.keyboard_only_exam:
+    value: unverified
+
+  access.rtl_support:
+    value: unverified
+
+  access.bundled_languages:
+    value: 3
+    note: English (en-GB) ships in the package. French and Italian are official language packs installed separately.
+    method: docs
+    source_url: https://fsvblr.github.io/quiztools-languages/
+    verified_at: 2026-09-30
+
+  access.accommodations:
+    value: unverified
+
+  hosting.platform_requirement:
+    value: Joomla 5.4 or 6
+    note: The package installer requires Joomla 5.4.0; the update server targets Joomla 5.4 and 6.0 to 6.2.
+    method: source-code
+    source_url: https://raw.githubusercontent.com/fsvblr/updateservers/master/quiztools/quiztools.xml
+    verified_at: 2026-09-30
+
+  hosting.runtime_stack:
+    value: PHP 8.1+ with MySQL/MariaDB (Joomla database)
+    note: The installer checks PHP 8.1.0; the component ships MySQL install SQL only.
+    method: source-code
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/pkg_quiztools_script.php#L36-L37
+    verified_at: 2026-09-30
+
+  hosting.docker_image:
+    value: unverified
+
+  hosting.offline_mode:
+    value: unverified
+
+  hosting.mobile_friendly:
+    value: unverified
+
+  cost.license_spdx:
+    value: GPL-2.0-or-later
+    method: source-code
+    source_url: https://github.com/fsvblr/quiztools/blob/1.5.0/com_quiztools/quiztools.xml#L9
+    verified_at: 2026-09-30
+
+  cost.price_model:
+    value: free
+    method: docs
+    source_url: https://extensions.joomla.org/extension/living/education-a-culture/quiztools/
+    verified_at: 2026-09-30
+
+  cost.source_access:
+    value: https://github.com/fsvblr/quiztools
+    method: docs
+    source_url: https://github.com/fsvblr/quiztools/releases/tag/1.5.0
+    verified_at: 2026-09-30

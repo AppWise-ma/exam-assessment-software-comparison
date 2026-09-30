@@ -1,17 +1,9 @@
 import type { Area, Cell, LoadedProduct, Verdict } from "./data.ts";
 import { coverage } from "./rules.ts";
+import { PLATFORM_LABEL } from "./site.ts";
 
 export const START = "<!-- generated:start -->";
 export const END = "<!-- generated:end -->";
-
-const PLATFORM_LABEL: Record<string, string> = {
-  joomla: "Joomla",
-  wordpress: "WordPress",
-  odoo: "Odoo",
-  "standalone-web": "Web app",
-  desktop: "Desktop",
-  mobile: "Mobile",
-};
 
 export function cellText(cell: Cell | undefined): string {
   if (!cell || cell.value === "unverified") return "Not checked";

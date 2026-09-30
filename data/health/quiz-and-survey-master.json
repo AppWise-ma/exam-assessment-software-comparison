@@ -1,0 +1,13 @@
+{
+  "source": "https://github.com/QuizandSurveyMaster/quiz_master_next",
+  "fetched_at": "2026-09-30T21:42:21.817Z",
+  "stars": 95,
+  "last_push": "2026-09-30T06:45:28Z",
+  "latest_release": {
+    "tag": "11.1.1",
+    "date": "2026-04-14T13:30:45Z"
+  },
+  "license_spdx": "GPL-2.0",
+  "open_issues": 25,
+  "archived": false
+}
