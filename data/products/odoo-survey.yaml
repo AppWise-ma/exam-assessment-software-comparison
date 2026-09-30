@@ -1,0 +1,259 @@
+slug: odoo-survey
+name: Odoo Survey
+platform: odoo
+homepage: https://www.odoo.com/app/surveys
+repository: https://github.com/odoo/odoo
+version_tested: "20.0"
+affiliated: false
+summary: >
+  The Surveys app of Odoo Community, with scored quizzes, time limits and PDF certifications;
+  the website_slides_survey module links certifications to eLearning courses. It suits
+  organisations that already run Odoo.
+
+features:
+  questions.question_type_count:
+    value: 9
+    note: Counted the values of the question_type selection field on survey.question (single-select, multi-select, long text, short text, number, scale, date, datetime, matrix).
+    method: source-code
+    source_url: https://github.com/odoo/odoo/blob/20.0/addons/survey/models/survey_question.py#L87-L97
+    verified_at: 2026-09-30
+
+  questions.question_bank:
+    value: "no"
+    note: Each question has a single survey_id (Many2one), so a question belongs to one survey and is not shared across surveys.
+    method: source-code
+    source_url: https://github.com/odoo/odoo/blob/20.0/addons/survey/models/survey_question.py#L69
+    verified_at: 2026-09-30
+
+  questions.question_categories:
+    value: unverified
+
+  questions.random_from_pool:
+    value: "yes"
+    note: With "Randomized per Section", each attempt draws a set number of random questions from each section of the survey.
+    method: source-code
+    source_url: https://github.com/odoo/odoo/blob/20.0/addons/survey/models/survey_survey.py#L628-L652
+    verified_at: 2026-09-30
+
+  questions.math_formulas:
+    value: unverified
+
+  questions.media_in_questions:
+    value: partial
+    note: Question descriptions are HTML and answer choices can carry an image. Audio and video embedding was not confirmed.
+    method: source-code
+    source_url: https://github.com/odoo/odoo/blob/20.0/addons/survey/models/survey_question.py#L863-L872
+    verified_at: 2026-09-30
+
+  delivery.time_limit:
+    value: "yes"
+    note: Survey time limit in minutes. When it is reached, the attempt is marked done on the next page load or submit.
+    method: source-code
+    source_url: https://github.com/odoo/odoo/blob/20.0/addons/survey/controllers/main.py#L436-L443
+    verified_at: 2026-09-30
+
+  delivery.server_side_timer:
+    value: "yes"
+    note: The submit route compares the server time with start time plus limit (10 s grace) and rejects late submissions; the code comment cites users blocking the JS timer.
+    method: source-code
+    source_url: https://github.com/odoo/odoo/blob/20.0/addons/survey/controllers/main.py#L555-L566
+    verified_at: 2026-09-30
+
+  delivery.shuffle_questions:
+    value: unverified
+
+  delivery.attempt_limits:
+    value: "yes"
+    note: Enforced only when access is "Invited people only" or login is required.
+    method: source-code
+    source_url: https://github.com/odoo/odoo/blob/20.0/addons/survey/models/survey_survey.py#L674-L680
+    verified_at: 2026-09-30
+
+  delivery.scheduling_windows:
+    value: partial
+    note: An invitation can set an answer deadline, checked by the server. There is no survey-level open date or close date.
+    method: source-code
+    source_url: https://github.com/odoo/odoo/blob/20.0/addons/survey/controllers/main.py#L87-L88
+    verified_at: 2026-09-30
+
+  delivery.resume_after_disconnect:
+    value: "yes"
+    note: Answers are saved on each page submit. The attempt is found again from the answer link or a 24-hour cookie and continues from the next page.
+    method: source-code
+    source_url: https://github.com/odoo/odoo/blob/20.0/addons/survey/controllers/main.py#L213-L255
+    verified_at: 2026-09-30
+
+  delivery.lockdown_browser:
+    value: unverified
+
+  delivery.ip_restriction:
+    value: unverified
+
+  proctoring.live_monitor:
+    value: unverified
+
+  proctoring.invigilator_role:
+    value: unverified
+
+  proctoring.extend_time_live:
+    value: unverified
+
+  proctoring.webcam_proctoring:
+    value: unverified
+
+  proctoring.activity_log:
+    value: unverified
+
+  grading.auto_grading:
+    value: "yes"
+    note: Single/multi-select, number, date and datetime questions are scored automatically against the correct answers.
+    method: source-code
+    source_url: https://github.com/odoo/odoo/blob/20.0/addons/survey/models/survey_user_input.py#L783-L823
+    verified_at: 2026-09-30
+
+  grading.manual_grading:
+    value: unverified
+
+  grading.partial_credit:
+    value: "yes"
+    note: Each answer choice has its own score, and the scores of all selected choices are added.
+    method: source-code
+    source_url: https://github.com/odoo/odoo/blob/20.0/addons/survey/models/survey_user_input.py#L783-L811
+    verified_at: 2026-09-30
+
+  grading.negative_marking:
+    value: "yes"
+    note: Answer choices accept a negative score. The total percentage is floored at 0.
+    method: source-code
+    source_url: https://github.com/odoo/odoo/blob/20.0/addons/survey/models/survey_question.py#L872
+    verified_at: 2026-09-30
+
+  grading.regrade:
+    value: unverified
+
+  grading.feedback_control:
+    value: partial
+    note: Scoring options show correct answers after each page, at the end, or the score only. There is no option to delay feedback until a close date.
+    method: docs
+    source_url: https://www.odoo.com/documentation/20.0/applications/marketing/surveys/create.html
+    verified_at: 2026-09-30
+
+  certificates.certificate_pdf:
+    value: "yes"
+    note: A certification PDF is rendered for successful attempts, can be downloaded and can be sent by email template.
+    method: source-code
+    source_url: https://github.com/odoo/odoo/blob/20.0/addons/survey/controllers/main.py#L713-L735
+    verified_at: 2026-09-30
+
+  certificates.certificate_designer:
+    value: partial
+    note: The author picks one of 8 predefined certificate layouts. No layout editor in Community.
+    method: source-code
+    source_url: https://github.com/odoo/odoo/blob/20.0/addons/survey/models/survey_survey.py#L133-L142
+    verified_at: 2026-09-30
+
+  certificates.certificate_verification:
+    value: unverified
+
+  reporting.results_export:
+    value: "yes"
+    note: Through the standard Odoo list export on the Participations list (XLSX or CSV).
+    method: docs
+    source_url: https://www.odoo.com/documentation/20.0/applications/essentials/export_import_data.html
+    verified_at: 2026-09-30
+
+  reporting.item_analysis:
+    value: unverified
+
+  reporting.candidate_report:
+    value: "yes"
+    note: Opening a participant shows the submitted answers. The record also stores score and start and end times.
+    method: docs
+    source_url: https://www.odoo.com/documentation/20.0/applications/marketing/surveys/analysis.html
+    verified_at: 2026-09-30
+
+  standards.qti_import:
+    value: unverified
+
+  standards.qti_export:
+    value: unverified
+
+  standards.other_import_formats:
+    value: unverified
+
+  standards.lti:
+    value: unverified
+
+  standards.scorm_xapi:
+    value: unverified
+
+  standards.rest_api:
+    value: "yes"
+    note: Generic Odoo JSON-2 model API over HTTP, which covers survey models. Odoo Online limits it to some plans.
+    method: docs
+    source_url: https://www.odoo.com/documentation/20.0/developer/reference/external_api.html
+    verified_at: 2026-09-30
+
+  access.wcag_statement:
+    value: unverified
+
+  access.keyboard_only_exam:
+    value: unverified
+
+  access.rtl_support:
+    value: unverified
+
+  access.bundled_languages:
+    value: 57
+    note: 56 .po translation files in addons/survey/i18n plus the English source. Completeness of each translation not checked.
+    method: source-code
+    source_url: https://github.com/odoo/odoo/tree/20.0/addons/survey/i18n
+    verified_at: 2026-09-30
+
+  access.accommodations:
+    value: unverified
+
+  hosting.platform_requirement:
+    value: Odoo 20 (Community)
+    method: source-code
+    source_url: https://github.com/odoo/odoo/blob/20.0/addons/survey/__manifest__.py
+    verified_at: 2026-09-30
+
+  hosting.runtime_stack:
+    value: Python 3.12+ with PostgreSQL 16+
+    method: docs
+    source_url: https://www.odoo.com/documentation/20.0/administration/on_premise/source.html
+    verified_at: 2026-09-30
+
+  hosting.docker_image:
+    value: "yes"
+    note: Docker Official Image "odoo", maintained by Odoo (github.com/odoo/docker); tags 20.0 and latest.
+    method: docs
+    source_url: https://github.com/docker-library/docs/blob/master/odoo/README.md
+    verified_at: 2026-09-30
+
+  hosting.offline_mode:
+    value: unverified
+
+  hosting.mobile_friendly:
+    value: unverified
+
+  cost.license_spdx:
+    value: LGPL-3.0-only
+    note: Manifest declares 'LGPL-3'; the repository LICENSE names LGPLv3.
+    method: source-code
+    source_url: https://github.com/odoo/odoo/blob/20.0/addons/survey/__manifest__.py#L115
+    verified_at: 2026-09-30
+
+  cost.price_model:
+    value: free
+    note: Community edition, published on GitHub under LGPLv3.
+    method: source-code
+    source_url: https://github.com/odoo/odoo/blob/20.0/LICENSE
+    verified_at: 2026-09-30
+
+  cost.source_access:
+    value: https://github.com/odoo/odoo (addons/survey, addons/website_slides_survey)
+    method: source-code
+    source_url: https://github.com/odoo/odoo/tree/20.0/addons/survey
+    verified_at: 2026-09-30

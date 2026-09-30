@@ -59,8 +59,8 @@ const day = (iso: string | null | undefined) => (iso ? iso.slice(0, 10) : "unkno
   {health ? (
     <>
       <dl class="facts">
-        <dt>Latest release</dt>
-        <dd>{health.latest_release ? `${health.latest_release.tag} (${day(health.latest_release.date)})` : "No release published on the repository"}</dd>
+        <dt>Latest GitHub/GitLab release</dt>
+        <dd>{health.latest_release ? `${health.latest_release.tag} (${day(health.latest_release.date)})` : "None published there (the project may release through tags or another site)"}</dd>
         <dt>Last push</dt>
         <dd>{day(health.last_push)}</dd>
         <dt>Stars</dt>
