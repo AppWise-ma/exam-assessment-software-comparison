@@ -6,8 +6,10 @@ import { stripCodeBlocks } from "../scripts/lib/prose.ts";
 import {
   REPO_URL,
   cellHref,
+  compareStats,
   comparePairs,
-  extractDisclosure,
+  lastVerified,
+  metaDescription,
   isStale,
   jsonLd,
   rewriteRepoHref,
@@ -77,11 +79,35 @@ describe("rewriteRepoHref", () => {
   });
 });
 
-describe("extractDisclosure", () => {
-  it("finds the disclosure in README.md and keeps the product link", () => {
-    const d = extractDisclosure(readFileSync(join(ROOT, "README.md"), "utf8"));
-    expect(d.startsWith("**Disclosure:**")).toBe(true);
-    expect(d).toContain("https://www.nextsoftware.dev/joomla-extensions/next-exams");
+describe("metaDescription", () => {
+  it("keeps short text", () => {
+    expect(metaDescription("Short text.")).toBe("Short text.");
+  });
+
+  it("cuts long text on a word boundary", () => {
+    const d = metaDescription("word ".repeat(60));
+    expect(d.length).toBeLessThanOrEqual(155);
+    expect(d.endsWith("word…")).toBe(true);
+  });
+});
+
+describe("lastVerified", () => {
+  it("returns the newest checked date and ignores unverified cells", () => {
+    const p = product({
+      "a.x": { value: "yes", ...sourced, verified_at: "2026-09-01" },
+      "a.y": { value: "no", ...sourced, verified_at: "2026-09-20" },
+      "a.z": { value: "unverified", verified_at: "2026-09-29" },
+    });
+    expect(lastVerified([p])).toBe("2026-09-20");
+    expect(lastVerified([product({})])).toBeNull();
+  });
+});
+
+describe("compareStats", () => {
+  it("counts features both checked and those that differ", () => {
+    const a = product({ "a.x": { value: "yes", ...sourced }, "a.y": { value: "no", ...sourced }, "a.z": { value: "yes", ...sourced } });
+    const b = product({ "a.x": { value: "yes", ...sourced }, "a.y": { value: "yes", ...sourced }, "a.z": { value: "unverified" } });
+    expect(compareStats(a, b, ["a.x", "a.y", "a.z"])).toEqual({ both: 2, differ: 1 });
   });
 });
 

@@ -4,9 +4,9 @@
 import type { GetStaticPaths } from "astro";
 import Base from "../../layouts/Base.astro";
 import ComparisonApp from "../../components/ComparisonApp.astro";
-import { absUrl, areas, bySlug, products, verdicts } from "../../lib/data.ts";
+import { absUrl, areas, bySlug, features, products, url, verdicts } from "../../lib/data.ts";
 import type { Product } from "../../../../scripts/lib/data.ts";
-import { comparePairs, softwareApplicationLd } from "../../../../scripts/lib/site.ts";
+import { compareStats, comparePairs, lastVerified, softwareApplicationLd } from "../../../../scripts/lib/site.ts";
 
 export const getStaticPaths = (() =>
   comparePairs(products.map((p) => p.slug)).map(({ pair, a, b }) => ({
@@ -16,8 +16,9 @@ export const getStaticPaths = (() =>
 
 const { a, b } = Astro.props as { a: Product; b: Product };
 const path = `compare/${a.slug}-vs-${b.slug}/`;
-const title = `${a.name} vs ${b.name}: exam features compared with sources`;
-const description = `${a.name} and ${b.name} side by side on the same exam features. Each value links to its source and check date.`;
+const { both, differ } = compareStats(a, b, [...features.keys()]);
+const title = `${a.name} vs ${b.name}: exam software comparison`;
+const description = `${a.name} vs ${b.name} on ${features.size} exam features. Both checked on ${both}; they differ on ${differ}. Each value links to its source.`;
 const areaLabel = new Map(areas.map((x) => [x.id, x.label]));
 const relevant = verdicts.filter((v) => [a.slug, b.slug].some((s) => v.winners.includes(s) || v.runner_up === s));
 
@@ -38,12 +39,14 @@ const itemList = {
   description={description}
   breadcrumbs={[{ name: `${a.name} vs ${b.name}`, path }]}
   ld={[itemList]}
+  modified={lastVerified([a, b])}
   wide
 >
   <h1>{a.name} vs {b.name}</h1>
   <p class="lead">
-    {a.affiliated && `${a.name} is made by the maintainers of this comparison. `}
-    Both products are checked against the same feature definitions. Click a value to open its source.
+    <a href={url(`products/${a.slug}/`)}>{a.name}</a> and <a href={url(`products/${b.slug}/`)}>{b.name}</a> are checked
+    against the same {features.size} feature definitions. Both have a checked value for {both} features, and they
+    differ on {differ} of them. Tick "Only where products differ" to see just those. Click a value to open its source.
   </p>
   {relevant.length > 0 && (
     <>

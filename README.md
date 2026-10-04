@@ -2,8 +2,6 @@
 
 A sourced, hands-on comparison of open-source exam, quiz and assessment software: Joomla extensions, WordPress plugins, Odoo modules, standalone web apps, desktop and mobile apps.
 
-> **Disclosure:** maintained by the team behind [Next Exams](https://www.nextsoftware.dev/joomla-extensions/next-exams). We apply the same tests to our own product and publish where it loses. If we got something wrong, [open a correction](../../issues/new?template=correction.yml).
-
 Every value links to a source and a date. Read [how we test and pick winners](METHODOLOGY.md). The same data is published as a website at <https://appwise-ma.github.io/exam-assessment-software-comparison/>.
 
 <!-- generated:start -->
@@ -12,7 +10,7 @@ Every value links to a source and a date. Read [how we test and pick winners](ME
 | Product | Platform | License | Price model | Version tested | Features checked |
 |---|---|---|---|---|---|
 | [Moodle (Quiz activity)](https://moodle.org) | Web app | GPL-3.0-or-later | free | 5.2.3 | 41/50 |
-| [Next Exams (ours)](https://www.nextsoftware.dev/joomla-extensions/next-exams) | Joomla | GPL-2.0-or-later | paid (GPL) | 6.1.0 | 39/50 |
+| [Next Exams](https://www.nextsoftware.dev/joomla-extensions/next-exams) | Joomla | GPL-2.0-or-later | paid (GPL) | 6.1.0 | 39/50 |
 | [Odoo Survey](https://www.odoo.com/app/surveys) | Odoo | LGPL-3.0-only | free | 20.0 | 25/50 |
 | [Quiz and Survey Master](https://quizandsurveymaster.com) | WordPress | GPL-2.0-only | freemium | 11.2.7 | 30/50 |
 | [QuizTools](https://extensions.joomla.org/extension/living/education-a-culture/quiztools/) | Joomla | GPL-2.0-or-later | free | 1.5.0 | 28/50 |

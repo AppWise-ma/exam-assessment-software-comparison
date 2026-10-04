@@ -62,7 +62,7 @@ const featureCount = areas.reduce((n, a) => n + a.features.length, 0);
             const lic = p.features["cost.license_spdx"];
             const price = p.features["cost.price_model"];
             return (
-              <th scope="col" data-p={p.slug} class:list={["prod", { "col-ours": p.affiliated }]}>
+              <th scope="col" data-p={p.slug} class="prod">
                 <a href={url(`products/${p.slug}/`)}>{p.name}</a>
                 <span class="meta">
                   {PLATFORM_LABEL[p.platform] ?? p.platform}
@@ -87,7 +87,7 @@ const featureCount = areas.reduce((n, a) => n + a.features.length, 0);
                 {products.map((p) => {
                   const cell = p.features[`${area.id}.${f.id}`];
                   return (
-                    <td data-p={p.slug} data-v={valueLabel(cell)} class:list={{ "col-ours": p.affiliated }}>
+                    <td data-p={p.slug} data-v={valueLabel(cell)}>
                       <CellValue cell={cell} />
                       {isAssessed(cell) && cell.note && (
                         <details class="note">

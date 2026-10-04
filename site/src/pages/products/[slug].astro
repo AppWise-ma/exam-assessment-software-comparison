@@ -4,7 +4,7 @@ import Base from "../../layouts/Base.astro";
 import CellValue from "../../components/CellValue.astro";
 import { absUrl, areas, loadHealth, productCoverage, products, url } from "../../lib/data.ts";
 import type { Product } from "../../../../scripts/lib/data.ts";
-import { PLATFORM_LABEL, REPO_URL, comparePairs, isAssessed, softwareApplicationLd } from "../../../../scripts/lib/site.ts";
+import { PLATFORM_LABEL, REPO_URL, comparePairs, isAssessed, lastVerified, softwareApplicationLd } from "../../../../scripts/lib/site.ts";
 
 export const getStaticPaths = (() =>
   products.map((p) => ({ params: { slug: p.slug }, props: { product: p } }))) satisfies GetStaticPaths;
@@ -15,8 +15,8 @@ const { assessed, total } = productCoverage(product);
 const platform = PLATFORM_LABEL[product.platform] ?? product.platform;
 const license = product.features["cost.license_spdx"];
 
-const title = `${product.name} ${product.version_tested}: exam features checked against sources`;
-const description = `${product.summary.trim()} ${assessed} of ${total} features checked, each linked to its source.`.slice(0, 300);
+const title = `${product.name}: exam features checked with sources`;
+const description = `${product.summary.trim()} ${assessed} of ${total} features checked, each linked to its source.`;
 const pairs = comparePairs(products.map((p) => p.slug)).filter((c) => c.a === product.slug || c.b === product.slug);
 const nameOf = (slug: string) => products.find((p) => p.slug === slug)?.name ?? slug;
 const day = (iso: string | null | undefined) => (iso ? iso.slice(0, 10) : "unknown");
@@ -29,12 +29,10 @@ const day = (iso: string | null | undefined) => (iso ? iso.slice(0, 10) : "unkno
     { name: product.name, path: `products/${product.slug}/` },
   ]}
   ld={[softwareApplicationLd(product, absUrl(`products/${product.slug}/`))]}
+  modified={lastVerified([product])}
 >
-  <h1>{product.name}{product.affiliated && <span class="badge badge-ours">ours</span>}</h1>
+  <h1>{product.name}</h1>
   <p class="lead">{product.summary.trim()}</p>
-  {product.affiliated && (
-    <p><strong>This product is made by the maintainers of this comparison.</strong></p>
-  )}
 
   <dl class="facts">
     <dt>Platform</dt>

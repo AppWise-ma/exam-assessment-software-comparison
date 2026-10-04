@@ -11,7 +11,6 @@
   --no: #a1262b;
   --stale-bg: #fde7c7;
   --stale-fg: #6b3e00;
-  --ours-bg: #e8f0fe;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   line-height: 1.5;
 }
@@ -30,7 +29,6 @@
     --no: #ff8a8f;
     --stale-bg: #4a3212;
     --stale-fg: #ffd9a3;
-    --ours-bg: #1c2a44;
   }
 }
 
@@ -49,15 +47,6 @@ main, .site-header, .breadcrumbs, .site-footer {
   max-width: 72rem;
   margin: 0 auto;
   padding: 0 1rem;
-}
-
-.disclosure {
-  margin: 0;
-  padding: 0.6rem 1rem;
-  background: var(--note-bg);
-  border-bottom: 1px solid var(--line);
-  font-size: 0.9rem;
-  text-align: center;
 }
 
 .site-header {
@@ -97,7 +86,6 @@ th, td { padding: 0.45rem 0.6rem; border-bottom: 1px solid var(--line); text-ali
 thead th { background: var(--head); white-space: nowrap; }
 tbody th { font-weight: 500; min-width: 11rem; }
 tr:last-child > * { border-bottom: 0; }
-.col-ours { background: var(--ours-bg); }
 
 .v-yes { color: var(--yes); font-weight: 600; }
 .v-partial, .v-addon-paid, .v-addon-free { color: var(--partial); font-weight: 600; }
@@ -115,7 +103,6 @@ tr:last-child > * { border-bottom: 0; }
   background: var(--stale-bg);
   color: var(--stale-fg);
 }
-.badge-ours { background: var(--ours-bg); color: var(--fg); }
 
 sup a { text-decoration: none; }
 .footnotes { font-size: 0.85rem; color: var(--muted); margin: 0.5rem 0 0; padding-left: 1.5rem; }
@@ -211,8 +198,6 @@ main.wide, .site-header.wide { max-width: 100rem; }
 }
 .app-table .area-row th span { position: sticky; left: 0.6rem; }
 .app-table td { min-width: 8rem; }
-.app-table td.col-ours, .app-table th.col-ours { background: var(--ours-bg); }
-
 .app-table a[class^="v-"], .app-table span[class^="v-"] {
   display: inline-block;
   padding: 0.05rem 0.5rem;
@@ -231,3 +216,8 @@ main.wide, .site-header.wide { max-width: 100rem; }
 .note[open] { display: block; margin: 0.3rem 0 0; }
 .note p { margin: 0.2rem 0 0; color: var(--muted); max-width: 22rem; }
 .empty-row td { text-align: center; color: var(--muted); padding: 1.5rem; }
+
+.narrow { max-width: 60rem; }
+.product-list dt { margin-top: 0.9rem; font-weight: 600; }
+.product-list dd { margin: 0.2rem 0 0; }
+.site-footer time { font-variant-numeric: tabular-nums; }

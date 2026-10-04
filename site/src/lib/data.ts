@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { Marked, type Tokens } from "marked";
 import { featureIndex, loadAreas, loadProducts, loadVerdicts, type Product } from "../../../scripts/lib/data.ts";
 import { coverage } from "../../../scripts/lib/rules.ts";
-import { extractDisclosure, headingId, rewriteRepoHref } from "../../../scripts/lib/site.ts";
+import { headingId, rewriteRepoHref } from "../../../scripts/lib/site.ts";
 
 declare const __REPO_ROOT__: string;
 /** COMPARISON_ROOT lets a build read another copy of the data (used to preview fixtures). */
@@ -18,6 +18,18 @@ export const features = featureIndex(areas);
 export const products: Product[] = loadProducts(REPO_ROOT).map((p) => p.data);
 export const verdicts = loadVerdicts(REPO_ROOT);
 export const bySlug = new Map(products.map((p) => [p.slug, p]));
+
+/**
+ * A platform page with a single product only repeats that product's page, so it is
+ * kept out of search results. Keep in sync with the sitemap filter in astro.config.mjs.
+ */
+export const MIN_PRODUCTS_TO_INDEX_PLATFORM = 2;
+const platformCounts = new Map<string, number>();
+for (const p of products) platformCounts.set(p.platform, (platformCounts.get(p.platform) ?? 0) + 1);
+export const indexedPlatforms = [...platformCounts]
+  .filter(([, n]) => n >= MIN_PRODUCTS_TO_INDEX_PLATFORM)
+  .map(([p]) => p)
+  .sort();
 
 export function productCoverage(p: Product) {
   return coverage(p, areas);
@@ -68,8 +80,3 @@ function markdown(): Marked {
 export function renderRepoMarkdown(file: string): string {
   return markdown().parse(readFileSync(join(REPO_ROOT, file), "utf8")) as string;
 }
-
-/** Disclosure line from README.md, rendered as inline HTML. The Next Exams link is a normal followed link. */
-export const disclosureHtml = markdown().parseInline(
-  extractDisclosure(readFileSync(join(REPO_ROOT, "README.md"), "utf8")),
-) as string;

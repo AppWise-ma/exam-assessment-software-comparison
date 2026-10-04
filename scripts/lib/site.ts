@@ -83,11 +83,37 @@ export function rewriteRepoHref(href: string, siteUrl: (path: string) => string)
   return `${REPO_URL}/${kind}/main/${clean}${hash ? `#${hash}` : ""}`;
 }
 
-/** The disclosure paragraph from README.md, as Markdown without the quote marker. */
-export function extractDisclosure(readme: string): string {
-  const line = readme.split(/\r?\n/).find((l) => /^>\s*\*\*Disclosure:\*\*/.test(l));
-  if (!line) throw new Error("README.md has no '> **Disclosure:**' line");
-  return line.replace(/^>\s*/, "").trim();
+/** Shortens text for a meta description, cutting on a word boundary. */
+export function metaDescription(text: string, max = 155): string {
+  const clean = text.replace(/\s+/g, " ").trim();
+  if (clean.length <= max) return clean;
+  const cut = clean.slice(0, max - 1);
+  return cut.slice(0, cut.lastIndexOf(" ")).replace(/[\s,;:.-]+$/, "") + "…";
+}
+
+/** Most recent verified_at across the given products, or null. Used as the page's modified date. */
+export function lastVerified(products: Product[]): string | null {
+  let latest: string | null = null;
+  for (const p of products) {
+    for (const cell of Object.values(p.features ?? {})) {
+      if (isAssessed(cell) && cell.verified_at && (!latest || cell.verified_at > latest)) latest = cell.verified_at;
+    }
+  }
+  return latest;
+}
+
+/** Counts for a pair: features both products have a checked value for, and how many of those differ. */
+export function compareStats(a: Product, b: Product, featureKeys: string[]): { both: number; differ: number } {
+  let both = 0;
+  let differ = 0;
+  for (const key of featureKeys) {
+    const ca = a.features[key];
+    const cb = b.features[key];
+    if (!isAssessed(ca) || !isAssessed(cb)) continue;
+    both++;
+    if (valueLabel(ca) !== valueLabel(cb)) differ++;
+  }
+  return { both, differ };
 }
 
 /** GitHub-style heading id. */

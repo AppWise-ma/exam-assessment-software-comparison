@@ -24,9 +24,8 @@ export function renderGenerated(products: LoadedProduct[], areas: Area[], verdic
     lines.push("|---|---|---|---|---|---|");
     for (const { data: p } of products) {
       const { assessed, total } = coverage(p, areas);
-      const name = p.affiliated ? `${p.name} (ours)` : p.name;
       lines.push(
-        `| [${esc(name)}](${p.homepage}) | ${PLATFORM_LABEL[p.platform] ?? p.platform} | ${esc(cellText(p.features["cost.license_spdx"]))} | ${esc(cellText(p.features["cost.price_model"]))} | ${esc(p.version_tested)} | ${assessed}/${total} |`,
+        `| [${esc(p.name)}](${p.homepage}) | ${PLATFORM_LABEL[p.platform] ?? p.platform} | ${esc(cellText(p.features["cost.license_spdx"]))} | ${esc(cellText(p.features["cost.price_model"]))} | ${esc(p.version_tested)} | ${assessed}/${total} |`,
       );
     }
     lines.push("");
