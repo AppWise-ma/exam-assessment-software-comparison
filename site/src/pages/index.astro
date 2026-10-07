@@ -1,0 +1,81 @@
+---
+import Base from "../layouts/Base.astro";
+import ComparisonApp from "../components/ComparisonApp.astro";
+import { absUrl, areas, bySlug, productCoverage, products, url, verdicts } from "../lib/data.ts";
+import { PLATFORM_LABEL, comparePairs, lastVerified, softwareApplicationLd } from "../../../scripts/lib/site.ts";
+
+const names = products.map((p) => p.name);
+const title = products.length
+  ? `Open-source exam software compared (${products.length} tools, sourced)`
+  : "Open-source exam software comparison";
+const description = products.length
+  ? `Compare open-source exam and quiz software: ${names.join(", ")}. Every value links to its source.`
+  : "A sourced comparison of open-source exam, quiz and assessment software.";
+const featureCount = areas.reduce((n, a) => n + a.features.length, 0);
+const pairs = comparePairs(products.map((p) => p.slug));
+const nameOf = (slug: string) => bySlug.get(slug)?.name ?? slug;
+
+const itemList = {
+  "@type": "ItemList",
+  name: "Open-source exam software",
+  numberOfItems: products.length,
+  itemListElement: products.map((p, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    url: absUrl(`products/${p.slug}/`),
+    item: softwareApplicationLd(p, absUrl(`products/${p.slug}/`)),
+  })),
+};
+const areaLabel = new Map(areas.map((a) => [a.id, a.label]));
+---
+<Base title={title} description={description} ld={[itemList]} modified={lastVerified(products)} wide>
+  <h1>Compare open-source exam software</h1>
+  <p class="lead">
+    {products.length} exam, quiz and assessment tools checked against the same {featureCount} features, from question
+    banks and timers to proctoring, certificates and QTI. Pick products and filter by area. Click a value to open its
+    source; hover it for the date it was checked.{" "}
+    <a href={url("methodology/")}>How values are collected</a>.
+  </p>
+
+  {products.length === 0 ? <p>No products published yet.</p> : <ComparisonApp products={products} />}
+
+  {verdicts.length > 0 && (
+    <>
+      <h2 id="verdicts">Best in each area</h2>
+      <ul>
+        {verdicts.map((v) => (
+          <li>
+            <strong>{areaLabel.get(v.area) ?? v.area}:</strong>{" "}
+            {v.winners.map((w) => bySlug.get(w)?.name ?? w).join(", ") || "No clear winner"}. {v.rationale}
+          </li>
+        ))}
+      </ul>
+    </>
+  )}
+
+  {products.length > 0 && (
+    <section aria-labelledby="products" class="narrow">
+      <h2 id="products">The products</h2>
+      <dl class="product-list">
+        {products.map((p) => {
+          const { assessed, total } = productCoverage(p);
+          return (
+            <>
+              <dt><a href={url(`products/${p.slug}/`)}>{p.name}</a> <span class="muted">({PLATFORM_LABEL[p.platform] ?? p.platform}, version {p.version_tested})</span></dt>
+              <dd>{p.summary.trim()} {assessed} of {total} features checked.</dd>
+            </>
+          );
+        })}
+      </dl>
+    </section>
+  )}
+
+  {pairs.length > 0 && (
+    <section aria-labelledby="pairs" class="narrow">
+      <h2 id="pairs">Side-by-side comparisons</h2>
+      <ul>
+        {pairs.map((c) => <li><a href={url(`compare/${c.pair}/`)}>{nameOf(c.a)} vs {nameOf(c.b)}</a></li>)}
+      </ul>
+    </section>
+  )}
+</Base>

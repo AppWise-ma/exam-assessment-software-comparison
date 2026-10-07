@@ -27,6 +27,11 @@ export function stripNonProse(text: string): string {
     .replace(/https?:\/\/\S+/g, blank);
 }
 
+/** Blanks <style> and <script> blocks of an .astro/HTML file, keeping line numbers. */
+export function stripCodeBlocks(text: string): string {
+  return text.replace(/<(style|script)\b[^>]*>[\s\S]*?<\/\1>/g, (m) => m.replace(/[^\n]/g, " "));
+}
+
 export function lintProse(text: string, rules: RegExp[]): ProseHit[] {
   const hits: ProseHit[] = [];
   stripNonProse(text).split("\n").forEach((line, i) => {

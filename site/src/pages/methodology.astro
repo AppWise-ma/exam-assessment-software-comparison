@@ -1,0 +1,13 @@
+---
+import Base from "../layouts/Base.astro";
+import { renderRepoMarkdown } from "../lib/data.ts";
+
+const html = renderRepoMarkdown("METHODOLOGY.md");
+---
+<Base
+  title="Methodology: how exam software values are sourced and checked"
+  description="Which products are included, how each value is sourced and dated, how hands-on tests are run and how area winners are chosen."
+  breadcrumbs={[{ name: "Methodology", path: "methodology/" }]}
+>
+  <article class="prose" set:html={html} />
+</Base>

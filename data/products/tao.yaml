@@ -1,0 +1,285 @@
+slug: tao
+name: TAO Community Edition
+platform: standalone-web
+homepage: https://www.taotesting.com/products/community-edition/
+repository: https://github.com/tao-ce/tao-ce
+version_tested: "2026.05-v1.1.1-public"
+affiliated: false
+summary: >
+  Self-hosted QTI assessment platform from Open Assessment Technologies, with item authoring, test delivery,
+  proctoring and manual scoring, shipped as containers. Version is the tao-ce/tao-ce release of 2026-09-22;
+  the older package-tao 3.6.0 (2022) and TAO Core are deprecated.
+
+features:
+  questions.question_type_count:
+    value: 17
+    note: The user guide states 17 of the QTI interactions are available (9 common, 3 inline, 5 graphic). Portable custom interactions (PCI) are not counted.
+    method: docs
+    source_url: https://userguide.taotesting.com/user-documentation/latest/public/adding-interactions
+    verified_at: 2026-09-30
+
+  questions.question_bank:
+    value: "yes"
+    method: docs
+    source_url: https://userguide.taotesting.com/user-documentation/latest/public/managing-items
+    verified_at: 2026-09-30
+
+  questions.question_categories:
+    value: "yes"
+    note: Items are grouped in classes with metadata properties; closed-ended metadata can be used to search and filter.
+    method: docs
+    source_url: https://userguide.taotesting.com/user-documentation/latest/public/using-metadata-for-classification-and-search
+    verified_at: 2026-09-30
+
+  questions.random_from_pool:
+    value: "yes"
+    note: Test sections have a QTI selection setting ("Select" N child items, optional with replacement).
+    method: source-code
+    source_url: https://github.com/oat-sa/extension-tao-testqti/blob/v50.3.6/views/js/controller/creator/templates/section-props.tpl#L192-L223
+    verified_at: 2026-09-30
+
+  questions.math_formulas:
+    value: "yes"
+    note: MathML in items is rendered with MathJax in the CE test runner. The LaTeX editor shown in the user guide is Wiris.
+    method: source-code
+    source_url: https://github.com/tao-ce/tao-deliver-fe/blob/main/packages/item-runner/src/runner/static/Math.svelte
+    verified_at: 2026-09-30
+
+  questions.media_in_questions:
+    value: "yes"
+    note: Items can contain images, video, sound files and passages.
+    method: docs
+    source_url: https://userguide.taotesting.com/user-documentation/latest/public/adding-assets-or-media-to-an-item
+    verified_at: 2026-09-30
+
+  delivery.time_limit:
+    value: "yes"
+    note: Maximum duration per test or section; when it runs out, answers are saved and the test is closed.
+    method: docs
+    source_url: https://userguide.taotesting.com/user-documentation/latest/public/test-settings
+    verified_at: 2026-09-30
+
+  delivery.server_side_timer:
+    value: unverified
+
+  delivery.shuffle_questions:
+    value: "yes"
+    note: Sections and items within a section can be shuffled; choice interactions have a "shuffle the choices" option (choice-interaction page).
+    method: docs
+    source_url: https://userguide.taotesting.com/user-documentation/latest/public/test-section-shuffling
+    verified_at: 2026-09-30
+
+  delivery.attempt_limits:
+    value: unverified
+
+  delivery.scheduling_windows:
+    value: "yes"
+    note: Sessions have an open date and close date; started sessions are auto-submitted at the auto-submit date.
+    method: docs
+    source_url: https://userguide.taotesting.com/user-documentation/latest/public/creating-a-new-session
+    verified_at: 2026-09-30
+
+  delivery.resume_after_disconnect:
+    value: unverified
+
+  delivery.lockdown_browser:
+    value: unverified
+
+  delivery.ip_restriction:
+    value: unverified
+
+  proctoring.live_monitor:
+    value: "yes"
+    note: The proctoring front end receives status updates over a WebSocket and updates the list without a reload.
+    method: source-code
+    source_url: https://github.com/tao-ce/proctoring/blob/864037f1a8dd3efe06cf7585fc740f07fd1dee2f/apps/frontend/src/core/webSocket/webSocketHandler.js#L63-L71
+    verified_at: 2026-09-30
+
+  proctoring.invigilator_role:
+    value: "yes"
+    note: Proctor role can monitor, pause, add time and terminate, but cannot edit tests, grade or view scores.
+    method: docs
+    source_url: https://userguide.taotesting.com/user-documentation/latest/public/account-and-group-roles
+    verified_at: 2026-09-30
+
+  proctoring.extend_time_live:
+    value: "yes"
+    note: Proctors can add extra time to a test taker in a live session.
+    method: docs
+    source_url: https://userguide.taotesting.com/user-documentation/latest/public/managing-test-takers-during-a-live-session
+    verified_at: 2026-09-30
+
+  proctoring.webcam_proctoring:
+    value: unverified
+
+  proctoring.activity_log:
+    value: partial
+    note: The per-test-taker proctoring log lists proctor actions and their comments (up to 20). Candidate events such as focus loss or reloads are not documented there.
+    method: docs
+    source_url: https://userguide.taotesting.com/user-documentation/latest/public/managing-test-takers-during-a-live-session
+    verified_at: 2026-09-30
+
+  grading.auto_grading:
+    value: "yes"
+    method: docs
+    source_url: https://userguide.taotesting.com/user-documentation/latest/public/scoring-items-automatically
+    verified_at: 2026-09-30
+
+  grading.manual_grading:
+    value: "yes"
+    note: Scorers pick a score per interaction and can add inline feedback to the response (TAO Grader, included in CE).
+    method: docs
+    source_url: https://userguide.taotesting.com/user-documentation/latest/public/scoring-assessments-manually-tao-ignite
+    verified_at: 2026-09-30
+
+  grading.partial_credit:
+    value: "yes"
+    note: Map Response scoring awards points for correct parts of a response.
+    method: docs
+    source_url: https://userguide.taotesting.com/user-documentation/latest/public/scoring-items-automatically
+    verified_at: 2026-09-30
+
+  grading.negative_marking:
+    value: "yes"
+    note: Map Response allows negative values for wrong answers, with an optional minimum score.
+    method: docs
+    source_url: https://userguide.taotesting.com/user-documentation/latest/public/scoring-items-automatically
+    verified_at: 2026-09-30
+
+  grading.regrade:
+    value: unverified
+
+  grading.feedback_control:
+    value: partial
+    note: Per session, review can be enabled or off, started right after submission, and show correct answers and scores. No documented option to hold review until the close date.
+    method: docs
+    source_url: https://userguide.taotesting.com/user-documentation/latest/public/creating-a-new-session
+    verified_at: 2026-09-30
+
+  certificates.certificate_pdf:
+    value: unverified
+
+  certificates.certificate_designer:
+    value: unverified
+
+  certificates.certificate_verification:
+    value: unverified
+
+  reporting.results_export:
+    value: "yes"
+    note: Session results export to CSV with session-level and item-level fields.
+    method: docs
+    source_url: https://userguide.taotesting.com/user-documentation/latest/public/exporting-and-interpreting-csv-session-results-1
+    verified_at: 2026-09-30
+
+  reporting.item_analysis:
+    value: unverified
+
+  reporting.candidate_report:
+    value: "yes"
+    note: Shows per-item state and score, overall score and time spent per item.
+    method: docs
+    source_url: https://userguide.taotesting.com/user-documentation/latest/public/viewing-a-test-taker-s-report
+    verified_at: 2026-09-30
+
+  standards.qti_import:
+    value: "yes"
+    note: QTI 2.1 and 2.2 items and packages (also APIP). The import validator also has QTI 3.0 schemas.
+    method: source-code
+    source_url: https://github.com/oat-sa/extension-tao-itemqti/blob/v32.5.13.1/model/ValidationService.php#L28-L73
+    verified_at: 2026-09-30
+
+  standards.qti_export:
+    value: "yes"
+    note: Item export handlers for QTI 2.1 package, QTI 2.2 package, QTI 3.0 package and APIP package.
+    method: source-code
+    source_url: https://github.com/oat-sa/extension-tao-itemqti/blob/v32.5.13.1/scripts/install/SetItemModel.php#L46-L52
+    verified_at: 2026-09-30
+
+  standards.other_import_formats:
+    value: CSV, RDF, APIP packages
+    method: docs
+    source_url: https://userguide.taotesting.com/user-documentation/latest/public/importing-items
+    verified_at: 2026-09-30
+
+  standards.lti:
+    value: unverified
+
+  standards.scorm_xapi:
+    value: unverified
+
+  standards.rest_api:
+    value: "yes"
+    note: Dynamic Query API (Swagger spec provided) to query deliveries, results and attachments; the service is part of the CE stack.
+    method: docs
+    source_url: https://userguide.taotesting.com/developer-documentation/latest/public/dynamic-query-api
+    verified_at: 2026-09-30
+
+  access.wcag_statement:
+    value: unverified
+
+  access.keyboard_only_exam:
+    value: unverified
+
+  access.rtl_support:
+    value: unverified
+
+  access.bundled_languages:
+    value: 18
+    note: Vendor page for CE states 18 default languages, including Arabic. The candidate app ships more locale files.
+    method: docs
+    source_url: https://www.taotesting.com/products/community-edition/
+    verified_at: 2026-09-30
+
+  access.accommodations:
+    value: unverified
+
+  hosting.platform_requirement:
+    value: none (runs as containers via Docker Compose, or as a VM appliance)
+    method: docs
+    source_url: https://github.com/tao-ce/tao-ce/blob/2026.05-v1.1.1-public/docs/start/install/container/docker-compose.md
+    verified_at: 2026-09-30
+
+  hosting.runtime_stack:
+    value: PHP 8.4 + PostgreSQL 17, with Elasticsearch 8 and Valkey (Redis)
+    note: PHP version from the Containerfile (IMAGE_PHP_VERSION 8.4); services from the Compose stack file.
+    method: source-code
+    source_url: https://github.com/tao-ce/tao-ce/blob/2026.05-v1.1.1-public/docker-compose.stack.yml#L1-L40
+    verified_at: 2026-09-30
+
+  hosting.docker_image:
+    value: "yes"
+    note: quay.io/tao-ce/tao-ce, used by the official Compose file.
+    method: source-code
+    source_url: https://github.com/tao-ce/tao-ce/blob/2026.05-v1.1.1-public/docker-compose.yml#L9
+    verified_at: 2026-09-30
+
+  hosting.offline_mode:
+    value: "yes"
+    note: The VM appliance can be used offline after a first download (about 3 GB); a separate guide covers LAN access.
+    method: docs
+    source_url: https://github.com/tao-ce/tao-ce/blob/2026.05-v1.1.1-public/docs/start/install/appliance/vm.md
+    verified_at: 2026-09-30
+
+  hosting.mobile_friendly:
+    value: unverified
+
+  cost.license_spdx:
+    value: AGPL-3.0-only
+    note: CE components are dual-licensed AGPL-3.0-only or a TAO commercial license. The authoring back office reuses GPL-2.0-only oat-sa extensions.
+    method: source-code
+    source_url: https://github.com/tao-ce/tao-ce/blob/2026.05-v1.1.1-public/LICENSE.txt
+    verified_at: 2026-09-30
+
+  cost.price_model:
+    value: free
+    note: Hosted editions (TAO Ignite and others) are sold separately by OAT.
+    method: docs
+    source_url: https://www.taotesting.com/products/community-edition/
+    verified_at: 2026-09-30
+
+  cost.source_access:
+    value: https://github.com/tao-ce/tao-ce
+    method: source-code
+    source_url: https://github.com/tao-ce/tao-ce
+    verified_at: 2026-09-30
