@@ -12,64 +12,72 @@ interface Props {
 const { products } = Astro.props;
 const platforms = [...new Set(products.map((p) => p.platform))].sort();
 const featureCount = areas.reduce((n, a) => n + a.features.length, 0);
+const label = "grid gap-1 text-xs font-medium text-zinc-600 dark:text-zinc-400";
+const check = "flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300";
 ---
-<div class="app" data-app>
-  <form class="toolbar" hidden aria-label="Filter the comparison" onsubmit="return false">
-    <fieldset class="products">
-      <legend>Products</legend>
-      {products.map((p) => (
-        <label class="chip">
-          <input type="checkbox" name="p" value={p.slug} data-platform={p.platform} checked />
-          {p.name}
-        </label>
-      ))}
-    </fieldset>
-    <div class="filters">
+<div data-app>
+  <form class="card mb-4 grid gap-4 p-4" hidden aria-label="Filter the comparison" onsubmit="return false">
+    {products.length > 2 && (
+      <fieldset>
+        <legend class="mb-2 text-xs font-medium text-zinc-600 dark:text-zinc-400">Products</legend>
+        <div class="flex flex-wrap gap-2">
+          {products.map((p) => (
+            <label class="chip">
+              <input type="checkbox" name="p" value={p.slug} data-platform={p.platform} checked class="size-3.5 accent-accent-600" />
+              {p.name}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+    )}
+    {products.length <= 2 && products.map((p) => <input type="checkbox" name="p" value={p.slug} data-platform={p.platform} checked hidden />)}
+    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[repeat(3,minmax(0,14rem))_1fr] lg:items-end">
       {platforms.length > 1 && (
-        <label>
+        <label class={label}>
           Platform
-          <select name="platform">
-            <option value="">All</option>
+          <select name="platform" class="field">
+            <option value="">All platforms</option>
             {platforms.map((pl) => <option value={pl}>{PLATFORM_LABEL[pl] ?? pl}</option>)}
           </select>
         </label>
       )}
-      <label>
+      <label class={label}>
         Area
-        <select name="area">
+        <select name="area" class="field">
           <option value="">All areas</option>
           {areas.map((a) => <option value={a.id}>{a.label}</option>)}
         </select>
       </label>
-      <label>
+      <label class={label}>
         Feature
-        <input type="search" name="q" placeholder="e.g. timer, QTI" />
+        <input type="search" name="q" class="field" placeholder="e.g. timer, QTI" autocomplete="off" />
       </label>
-      <label class="check"><input type="checkbox" name="diff" /> Only where products differ</label>
-      <label class="check"><input type="checkbox" name="checked" /> Hide rows nobody checked</label>
-      <button type="button" name="reset">Reset</button>
+      <div class="flex flex-wrap items-center gap-x-5 gap-y-2 lg:justify-end">
+        <label class={check}><input type="checkbox" name="diff" class="size-4 accent-accent-600" /> Only differences</label>
+        <label class={check}><input type="checkbox" name="checked" class="size-4 accent-accent-600" /> Hide unchecked rows</label>
+        <button type="button" name="reset" class="btn btn-ghost h-8 px-3">Reset</button>
+      </div>
     </div>
-    <p class="status" role="status" aria-live="polite"></p>
+    <p class="status text-xs muted" role="status" aria-live="polite"></p>
   </form>
 
-  <div class="table-wrap app-table">
-    <table>
+  <div class="relative max-h-[calc(100vh-5rem)] overflow-auto rounded-xl border border-zinc-200 dark:border-zinc-800">
+    <table class="w-full border-separate border-spacing-0 text-sm">
       <thead>
         <tr>
-          <th scope="col" class="corner">Feature</th>
+          <th scope="col" class="sticky top-0 left-0 z-30 min-w-40 border-b border-zinc-200 bg-zinc-50 px-3 py-3 text-left align-bottom text-xs font-semibold tracking-wide text-zinc-500 uppercase sm:min-w-56 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400">
+            Feature
+          </th>
           {products.map((p) => {
             const { assessed } = productCoverage(p);
             const lic = p.features["cost.license_spdx"];
-            const price = p.features["cost.price_model"];
             return (
-              <th scope="col" data-p={p.slug} class="prod">
-                <a href={url(`products/${p.slug}/`)}>{p.name}</a>
-                <span class="meta">
-                  {PLATFORM_LABEL[p.platform] ?? p.platform}
-                  {isAssessed(lic) && <> · {String(lic.value)}</>}
-                  {isAssessed(price) && <> · {String(price.value)}</>}
+              <th scope="col" data-p={p.slug} class="sticky top-0 z-20 min-w-40 border-b border-l border-zinc-200 bg-zinc-50 px-3 py-3 text-left align-bottom font-normal dark:border-zinc-800 dark:bg-zinc-900">
+                <a href={url(`products/${p.slug}/`)} class="font-semibold text-zinc-900 no-underline hover:underline dark:text-zinc-50">{p.name}</a>
+                <span class="mt-0.5 block text-xs muted">
+                  {PLATFORM_LABEL[p.platform] ?? p.platform}{isAssessed(lic) && <> · {String(lic.value)}</>}
                 </span>
-                <span class="meta">v{p.version_tested} · {assessed}/{featureCount} checked</span>
+                <span class="block text-xs muted">v{p.version_tested} · {assessed}/{featureCount} checked</span>
               </th>
             );
           })}
@@ -78,21 +86,25 @@ const featureCount = areas.reduce((n, a) => n + a.features.length, 0);
       <tbody>
         {areas.map((area) => (
           <>
-            <tr class="area-row" data-area-row={area.id}>
-              <th scope="colgroup" colspan={products.length + 1}><span>{area.label}</span></th>
+            <tr data-area-row={area.id}>
+              <th scope="colgroup" colspan={products.length + 1} class="border-b border-zinc-200 bg-zinc-50/80 px-3 pt-5 pb-2 text-left text-xs font-semibold tracking-wide text-zinc-500 uppercase dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-400">
+                <span class="sticky left-3">{area.label}</span>
+              </th>
             </tr>
             {area.features.map((f) => (
-              <tr data-feature data-area={area.id} data-search={`${f.label} ${f.definition}`.toLowerCase()}>
-                <th scope="row" title={f.definition.trim()}>{f.label}</th>
+              <tr data-feature data-area={area.id} data-search={`${f.label} ${f.definition}`.toLowerCase()} class="group">
+                <th scope="row" title={f.definition.trim()} class="sticky left-0 z-10 border-b border-zinc-100 bg-white px-3 py-2.5 text-left align-top font-medium text-zinc-800 group-data-differs:bg-amber-50/70 dark:border-zinc-800/70 dark:bg-zinc-950 dark:text-zinc-200 dark:group-data-differs:bg-amber-500/5">
+                  {f.label}
+                </th>
                 {products.map((p) => {
                   const cell = p.features[`${area.id}.${f.id}`];
                   return (
-                    <td data-p={p.slug} data-v={valueLabel(cell)}>
+                    <td data-p={p.slug} data-v={valueLabel(cell)} class="border-b border-l border-zinc-100 px-3 py-2.5 align-top group-data-differs:bg-amber-50/40 dark:border-zinc-800/70 dark:group-data-differs:bg-amber-500/5">
                       <CellValue cell={cell} />
                       {isAssessed(cell) && cell.note && (
-                        <details class="note">
-                          <summary>note</summary>
-                          <p>{cell.note}</p>
+                        <details class="mt-1 text-xs">
+                          <summary class="w-fit cursor-pointer list-none text-zinc-400 underline decoration-dotted underline-offset-2 hover:text-zinc-600 dark:hover:text-zinc-300 [&::-webkit-details-marker]:hidden">note</summary>
+                          <p class="mt-1 max-w-72 leading-5 text-zinc-600 dark:text-zinc-400">{cell.note}</p>
                         </details>
                       )}
                     </td>
@@ -103,17 +115,20 @@ const featureCount = areas.reduce((n, a) => n + a.features.length, 0);
           </>
         ))}
         <tr class="empty-row" hidden>
-          <td colspan={products.length + 1}>No feature matches these filters.</td>
+          <td colspan={products.length + 1} class="px-3 py-10 text-center muted">No feature matches these filters.</td>
         </tr>
       </tbody>
     </table>
   </div>
+  <p class="mt-3 text-xs muted">
+    Click a value to open its source; hover it for the date it was checked. Rows where the shown products differ are tinted.
+  </p>
 </div>
 
 <script>
   const app = document.querySelector<HTMLElement>("[data-app]");
   if (app) {
-    const form = app.querySelector<HTMLFormElement>(".toolbar")!;
+    const form = app.querySelector<HTMLFormElement>("form")!;
     const table = app.querySelector("table")!;
     const boxes = [...form.querySelectorAll<HTMLInputElement>('input[name="p"]')];
     const platform = form.querySelector<HTMLSelectElement>('select[name="platform"]');
@@ -145,9 +160,12 @@ const featureCount = areas.reduce((n, a) => n + a.features.length, 0);
       let shown = 0;
       for (const row of rows) {
         const values = [...row.querySelectorAll<HTMLElement>("td[data-p]")].filter((c) => !c.hidden).map((c) => c.dataset.v);
+        const checkedValues = values.filter((v) => v !== "Not checked");
+        const differs = new Set(checkedValues).size > 1;
+        row.toggleAttribute("data-differs", differs);
         let ok = (!area.value || row.dataset.area === area.value) && (!term || row.dataset.search!.includes(term));
         if (ok && diff.checked) ok = new Set(values).size > 1;
-        if (ok && checkedOnly.checked) ok = values.some((v) => v !== "Not checked");
+        if (ok && checkedOnly.checked) ok = checkedValues.length > 0;
         row.hidden = !ok;
         if (ok) {
           shown++;
@@ -156,7 +174,7 @@ const featureCount = areas.reduce((n, a) => n + a.features.length, 0);
       }
       areaRows.forEach((r) => (r.hidden = !visibleAreas.has(r.dataset.areaRow!)));
       emptyRow.hidden = shown > 0;
-      status.textContent = `${shown} of ${rows.length} features, ${selected.size} of ${boxes.length} products`;
+      status.textContent = `Showing ${shown} of ${rows.length} features for ${selected.size} of ${boxes.length} products.`;
 
       const next = new URLSearchParams();
       if (selected.size !== boxes.length) next.set("p", [...selected].join(","));

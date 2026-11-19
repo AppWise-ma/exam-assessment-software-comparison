@@ -2,97 +2,125 @@ slug: next-exams
 name: Next Exams
 platform: joomla
 homepage: https://www.nextsoftware.dev/joomla-extensions/next-exams
-version_tested: "6.1.0"
+version_tested: "6.3.0"
 affiliated: true
 summary: >
-  Paid GPL exam component for Joomla 4.4, 5 and 6 with a question bank, random pools, server-side
-  timing, essay marking, PDF certificates, live invigilation and LTI 1.3. Made by the maintainers
-  of this comparison.
+  Paid GPL exam component for Joomla 4.4, 5 and 6 with a question bank of 16 types, timed exam
+  parts, listening audio, recorded speaking answers, score scales, PDF certificates, live
+  invigilation, a REST API and LTI 1.3. Made by the maintainers of this comparison.
 
 features:
   questions.question_type_count:
-    value: 9
-    note: Single and multiple choice, true/false, short answer, essay, ordering, matching, extended matching and cloze.
+    value: 16
+    note: Single and multiple choice, true/false, short answer, essay, ordering, matching, extended matching, cloze, image choice, range, hotspot, image marking, graph, puzzle and speaking (recorded).
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/question-bank
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   questions.question_bank:
     value: yes
     note: Questions are stored apart from exams and exams reference them.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/question-bank
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   questions.question_categories:
     value: yes
     note: Questions are filed in a subject tree and can carry tags; the bank can be filtered by subject, tag, type and state.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/question-bank
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   questions.random_from_pool:
     value: yes
     note: A pool rule draws N questions from a subject or tag per attempt; fixed and pool questions can be mixed.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/exam-builder
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   questions.math_formulas:
     value: yes
     note: LaTeX rendered with KaTeX in stems, options, explanations and results.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/question-bank
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   questions.media_in_questions:
     value: partial
-    note: The docs describe images only (PNG, JPEG, GIF, WebP, alt text required). Audio and video in questions are not documented.
+    note: Images in questions (PNG, JPEG, GIF, WebP). Audio (MP3, M4A) is attached to an exam part, not to a single question. Video is not documented.
+    method: docs
+    source_url: https://www.nextsoftware.dev/documentation/next-exams/features/listening-audio
+    verified_at: 2026-11-19
+
+  questions.question_versioning:
+    value: yes
+    note: Each save records a version. Changing the answers of an answered question saves a new version; past results keep the one that was answered.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/question-bank
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
+
+  questions.spoken_answers:
+    value: yes
+    note: Recorded in the browser with preparation time, a time limit and up to five takes; marked by hand with a rubric. Needs HTTPS; otherwise the learner uploads a file.
+    method: docs
+    source_url: https://www.nextsoftware.dev/documentation/next-exams/features/speaking-questions
+    verified_at: 2026-11-19
 
   delivery.time_limit:
     value: yes
     note: Reaching zero submits the attempt automatically.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/exam-builder
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   delivery.server_side_timer:
     value: yes
     note: The docs state the limit is enforced by the server and the browser countdown only displays the server clock. The runner also submits with JavaScript off.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/exam-runner
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   delivery.shuffle_questions:
     value: yes
     note: Separate per-exam switches for question order and option order, fixed at attempt start.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/exam-builder
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   delivery.attempt_limits:
     value: yes
     note: Maximum attempts and a cooldown between attempts; practice attempts are not counted.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/configuration/access-gates
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   delivery.scheduling_windows:
     value: yes
     note: Open from and open until times per exam, plus per-cohort windows.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/configuration/access-gates
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
+
+  delivery.timed_sections:
+    value: yes
+    note: Exam parts each have their own clock, optional reading time and forward-only navigation. The server enforces the part clocks.
+    method: docs
+    source_url: https://www.nextsoftware.dev/documentation/next-exams/features/exam-parts
+    verified_at: 2026-11-19
+
+  delivery.media_play_limit:
+    value: yes
+    note: Plays allowed is set from 1 to 10 per recording and counted by the server, so a page reload does not reset it.
+    method: docs
+    source_url: https://www.nextsoftware.dev/documentation/next-exams/features/listening-audio
+    verified_at: 2026-11-19
 
   delivery.resume_after_disconnect:
     value: yes
     note: Answers are autosaved; the examinee can return to the same attempt until the time limit, closing time or inactivity period is reached.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/faq
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   delivery.lockdown_browser:
     value: unverified
@@ -105,7 +133,7 @@ features:
     note: The board polls the server on a set interval (3 to 300 seconds) and shows status, progress and time left per examinee.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/live-monitoring
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   proctoring.invigilator_role:
     value: yes
@@ -119,154 +147,169 @@ features:
     note: Give more time to one examinee, or to everyone in the exam, from the live board.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/live-monitoring
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   proctoring.webcam_proctoring:
     value: "no"
     note: The docs state webcam and video proctoring are out of scope and will not be added.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/integrity-signals
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   proctoring.activity_log:
     value: partial
     note: Per attempt, staff see counts of focus loss, paste, tab switch and fullscreen exit, plus time to first answer per question, and a log of invigilator actions. There is no timestamped list of candidate events.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/integrity-signals
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   grading.auto_grading:
     value: yes
     note: Eight of the nine types are scored at submission; essay is marked by hand.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/grading-and-results
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   grading.manual_grading:
     value: yes
     note: Essays get points and feedback, optionally per rubric criterion.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/grading-and-results
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   grading.partial_credit:
     value: yes
     note: Per question, all-or-nothing (default) or proportional, for multiple response, ordering, matching, extended matching and cloze.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/question-bank
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   grading.negative_marking:
-    value: unverified
+    value: partial
+    note: Per question, for multiple-answer questions only. The attempt total never goes below 0.
+    method: docs
+    source_url: https://www.nextsoftware.dev/documentation/next-exams/features/grading-and-results
+    verified_at: 2026-11-19
 
   grading.regrade:
     value: unverified
 
   grading.feedback_control:
     value: yes
-    note: Score release per exam is immediate, after close, at a set time or manual. Showing correct answers is a separate switch.
+    note: Score release per exam is immediate, after close, at a set time or manual. Showing correct answers is a separate switch; the result page then shows each answer beside the correct one.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/grading-and-results
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
+
+  grading.score_scales:
+    value: yes
+    note: Step table from raw marks to a scaled score and a grade, with presets (OET-style, IELTS-style, CEFR, letter grades). The grade can decide pass. A changed table can be applied to finished attempts with Recalculate.
+    method: docs
+    source_url: https://www.nextsoftware.dev/documentation/next-exams/features/score-scales
+    verified_at: 2026-11-19
 
   certificates.certificate_pdf:
     value: yes
     note: Issued automatically on a pass when the exam has a certificate template; rendered by a bundled PDF engine.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/certificates
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   certificates.certificate_designer:
     value: yes
     note: Visual editor with drag-placed elements, fonts, colours, background and merge tokens.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/certificates
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   certificates.certificate_verification:
     value: yes
     note: QR code links to a public page keyed by a random token that shows valid, revoked or expired status.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/certificates
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   reporting.results_export:
     value: yes
     note: Attempts export to CSV, filtered as on screen. No XLSX export is documented.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/analytics-and-reports
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   reporting.item_analysis:
     value: yes
     note: Difficulty and item-total discrimination per question.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/analytics-and-reports
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   reporting.candidate_report:
     value: partial
     note: The per-student report lists every attempt with scores over time. The docs do not state that it shows each answer and per-question timing.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/analytics-and-reports
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   standards.qti_import:
     value: yes
     note: QTI 2.1.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/import-export
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   standards.qti_export:
     value: yes
     note: QTI 2.1, with a vendor extension that carries the native answer key.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/import-export
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   standards.other_import_formats:
     value: CSV (column mapping), Aiken, GIFT, Moodle XML
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/import-export
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   standards.lti:
     value: yes
     note: LTI 1.3 tool provider with Deep Linking and score passback to the LMS gradebook.
     method: docs
-    source_url: https://www.nextsoftware.dev/documentation/next-exams/configuration/lti
-    verified_at: 2026-09-30
+    source_url: https://www.nextsoftware.dev/documentation/next-exams/integrations/lti
+    verified_at: 2026-11-19
 
   standards.scorm_xapi:
     value: unverified
 
   standards.rest_api:
-    value: partial
-    note: A bearer-token JSON API with scopes for subjects, questions, exams, attempts and reports is described. The public docs do not list its endpoints.
+    value: yes
+    note: REST API under /api/index.php/v1/nextexams for subjects, tags, questions, exams, attempts, reports and access passes, with an OpenAPI document and a per-endpoint reference. Webhooks are also documented.
     method: docs
-    source_url: https://www.nextsoftware.dev/documentation/next-exams/configuration/api-tokens
-    verified_at: 2026-09-30
+    source_url: https://www.nextsoftware.dev/documentation/next-exams/rest-api/getting-started
+    verified_at: 2026-11-19
 
   access.wcag_statement:
     value: yes
     note: Claims WCAG 2.1 AA for the exam-taking flow, based on the vendor's own testing; no third-party audit or VPAT.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/features/accessibility
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   access.keyboard_only_exam:
     value: unverified
 
   access.rtl_support:
-    value: unverified
+    value: yes
+    note: Arabic ships right to left; the exam runner and result pages follow the site direction. Docs-based, not tested by us.
+    method: docs
+    source_url: https://www.nextsoftware.dev/documentation/next-exams/configuration/languages-and-rtl
+    verified_at: 2026-11-19
 
   access.bundled_languages:
-    value: 1
-    note: English (en-GB) only; other languages need your own Joomla .ini files.
+    value: 7
+    note: English, German, French, Italian, Spanish, Hungarian and Arabic.
     method: docs
-    source_url: https://www.nextsoftware.dev/documentation/next-exams/faq
-    verified_at: 2026-09-30
+    source_url: https://www.nextsoftware.dev/documentation/next-exams/configuration/languages-and-rtl
+    verified_at: 2026-11-19
 
   access.accommodations:
     value: unverified
@@ -275,14 +318,14 @@ features:
     value: Joomla 4.4, 5 or 6
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/installation
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   hosting.runtime_stack:
     value: PHP 8.1+ with MySQL/MariaDB
     note: PostgreSQL is not supported.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/installation
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   hosting.docker_image:
     value: unverified
@@ -298,18 +341,18 @@ features:
     note: Stated as "GNU General Public License v2 or later" in the docs and on the JED listing.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   cost.price_model:
     value: paid (GPL)
     note: Lowest tier is Developer at 59 EUR, with 1 year of support and updates.
     method: docs
     source_url: https://www.nextsoftware.dev/joomla-extensions/next-exams
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19
 
   cost.source_access:
     value: after purchase
     note: The package is downloaded from the customer account at nextsoftware.dev.
     method: docs
     source_url: https://www.nextsoftware.dev/documentation/next-exams/installation
-    verified_at: 2026-09-30
+    verified_at: 2026-11-19

@@ -53,6 +53,12 @@ features:
     source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/README.md#L93-L95
     verified_at: 2026-09-30
 
+  questions.question_versioning:
+    value: unverified
+
+  questions.spoken_answers:
+    value: unverified
+
   delivery.time_limit:
     value: yes
     note: When server time passes start time plus test duration, the attempt is set to status 4 (locked for timeout).
@@ -87,6 +93,12 @@ features:
     method: source-code
     source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/shared/code/tce_functions_test.php#L855-L868
     verified_at: 2026-09-30
+
+  delivery.timed_sections:
+    value: unverified
+
+  delivery.media_play_limit:
+    value: unverified
 
   delivery.resume_after_disconnect:
     value: yes
@@ -169,6 +181,9 @@ features:
     method: source-code
     source_url: https://github.com/tecnickcom/tcexam/blob/17.2.8/admin/code/tce_edit_test.php#L69-L79
     verified_at: 2026-09-30
+
+  grading.score_scales:
+    value: unverified
 
   certificates.certificate_pdf:
     value: unverified

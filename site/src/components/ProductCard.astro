@@ -1,0 +1,82 @@
+---
+// One product in the directory grid. Data attributes drive the client-side filters on the home page.
+import type { Product } from "../../../scripts/lib/data.ts";
+import { PLATFORM_LABEL, isAssessed, valueClass, valueLabel } from "../../../scripts/lib/site.ts";
+import { productCoverage, url } from "../lib/data.ts";
+
+interface Props {
+  product: Product;
+  /** Show the "Compare" checkbox (home directory only). */
+  selectable?: boolean;
+}
+
+/** A few features most buyers ask about first; the card shows how each product answers them. */
+const HIGHLIGHTS: [string, string][] = [
+  ["delivery.server_side_timer", "Server-side timer"],
+  ["questions.random_from_pool", "Random question pools"],
+  ["standards.qti_import", "QTI import"],
+  ["certificates.certificate_pdf", "PDF certificates"],
+];
+
+const { product: p, selectable = false } = Astro.props;
+const { assessed, total } = productCoverage(p);
+const pct = total ? Math.round((assessed / total) * 100) : 0;
+const lic = p.features["cost.license_spdx"];
+const price = p.features["cost.price_model"];
+const license = isAssessed(lic) ? String(lic.value) : "";
+const priceModel = isAssessed(price) ? String(price.value) : "";
+const platform = PLATFORM_LABEL[p.platform] ?? p.platform;
+const href = url(`products/${p.slug}/`);
+---
+<li
+  class="card group relative flex flex-col p-5 transition-shadow hover:shadow-md hover:shadow-zinc-900/5 has-[input:checked]:border-accent-500 has-[input:checked]:ring-1 has-[input:checked]:ring-accent-500"
+  data-card
+  data-slug={p.slug}
+  data-platform={p.platform}
+  data-license={license}
+  data-price={priceModel}
+  data-search={`${p.name} ${platform} ${p.summary}`.toLowerCase()}
+>
+  <div class="flex items-start justify-between gap-3">
+    <div class="min-w-0">
+      <h3 class="text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <a href={href} class="text-inherit no-underline after:absolute after:inset-0 after:rounded-xl">{p.name}</a>
+      </h3>
+      <p class="mt-0.5 text-xs muted">Version {p.version_tested}</p>
+    </div>
+    <span class="shrink-0 rounded-md bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">{platform}</span>
+  </div>
+
+  <p class="mt-3 line-clamp-3 text-sm leading-6 text-zinc-600 dark:text-zinc-400">{p.summary.trim()}</p>
+
+  <ul class="mt-4 space-y-1.5 text-sm">
+    {HIGHLIGHTS.map(([key, label]) => {
+      const cell = p.features[key];
+      return (
+        <li class="flex items-center justify-between gap-2">
+          <span class="text-zinc-600 dark:text-zinc-400">{label}</span>
+          <span class={valueClass(cell)}>{valueLabel(cell)}</span>
+        </li>
+      );
+    })}
+  </ul>
+
+  <div class="mt-auto pt-5">
+    <div class="flex flex-wrap gap-1.5 text-xs">
+      {license && <span class="rounded-md border border-zinc-200 px-1.5 py-0.5 text-zinc-600 dark:border-zinc-700 dark:text-zinc-400">{license}</span>}
+      {priceModel && <span class="rounded-md border border-zinc-200 px-1.5 py-0.5 text-zinc-600 dark:border-zinc-700 dark:text-zinc-400">{priceModel}</span>}
+    </div>
+    <div class="mt-4 flex items-center gap-3">
+      <div class="h-1.5 flex-1 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800" role="img" aria-label={`${assessed} of ${total} features checked`}>
+        <div class="h-full rounded-full bg-accent-500" style={`width:${pct}%`}></div>
+      </div>
+      <span class="text-xs whitespace-nowrap tabular-nums muted">{assessed}/{total} checked</span>
+    </div>
+    {selectable && (
+      <label class="relative z-10 mt-4 flex cursor-pointer items-center gap-2 border-t border-zinc-100 pt-3 text-sm text-zinc-700 dark:border-zinc-800 dark:text-zinc-300">
+        <input type="checkbox" name="pick" value={p.slug} class="size-4 rounded accent-accent-600" />
+        Add to comparison
+      </label>
+    )}
+  </div>
+</li>

@@ -1,0 +1,41 @@
+---
+import Base from "../../layouts/Base.astro";
+import ComparisonApp from "../../components/ComparisonApp.astro";
+import { absUrl, areas, products, url } from "../../lib/data.ts";
+import { lastVerified, softwareApplicationLd } from "../../../../scripts/lib/site.ts";
+
+const featureCount = areas.reduce((n, a) => n + a.features.length, 0);
+const title = `Compare ${products.length} open-source exam tools feature by feature`;
+const description = `Feature table for ${products.map((p) => p.name).join(", ")}: ${featureCount} exam features, each value linked to its source and dated.`;
+const itemList = {
+  "@type": "ItemList",
+  name: "Open-source exam software comparison table",
+  numberOfItems: products.length,
+  itemListElement: products.map((p, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    url: absUrl(`products/${p.slug}/`),
+    item: softwareApplicationLd(p, absUrl(`products/${p.slug}/`)),
+  })),
+};
+---
+<Base
+  title={title}
+  description={description}
+  breadcrumbs={[{ name: "Compare", path: "compare/" }]}
+  ld={[itemList]}
+  modified={lastVerified(products)}
+  wide
+>
+  <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl dark:text-zinc-50">Feature comparison table</h1>
+      <p class="mt-2 max-w-3xl text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+        {products.length} products and {featureCount} features. Pick products, narrow by area, or show only the rows where
+        they differ. The address keeps your filters, so you can share the view.
+      </p>
+    </div>
+    <a href={url()} class="btn btn-ghost">Back to the directory</a>
+  </div>
+  {products.length === 0 ? <p>No products published yet.</p> : <ComparisonApp products={products} />}
+</Base>

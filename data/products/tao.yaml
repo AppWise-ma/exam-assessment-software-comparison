@@ -52,6 +52,16 @@ features:
     source_url: https://userguide.taotesting.com/user-documentation/latest/public/adding-assets-or-media-to-an-item
     verified_at: 2026-09-30
 
+  questions.question_versioning:
+    value: unverified
+
+  questions.spoken_answers:
+    value: yes
+    note: Audio interaction, a Portable Custom Interaction in the standard package, records a spoken response with a set maximum length.
+    method: docs
+    source_url: https://userguide.taotesting.com/user-documentation/latest/public/audio-interaction
+    verified_at: 2026-11-19
+
   delivery.time_limit:
     value: "yes"
     note: Maximum duration per test or section; when it runs out, answers are saved and the test is closed.
@@ -78,6 +88,20 @@ features:
     method: docs
     source_url: https://userguide.taotesting.com/user-documentation/latest/public/creating-a-new-session
     verified_at: 2026-09-30
+
+  delivery.timed_sections:
+    value: yes
+    note: Time limits can be set on the test, test parts, sections and items; child timers must fit inside the parent.
+    method: docs
+    source_url: https://userguide.taotesting.com/knowledge-base/latest/public/how-to-set-timers-for-a-test
+    verified_at: 2026-11-19
+
+  delivery.media_play_limit:
+    value: partial
+    note: The media interaction has a Max plays count, which the guide describes for looped playback; it does not say whether it also limits manual replays.
+    method: docs
+    source_url: https://userguide.taotesting.com/user-documentation/latest/public/media-interaction
+    verified_at: 2026-11-19
 
   delivery.resume_after_disconnect:
     value: unverified
@@ -155,6 +179,9 @@ features:
     method: docs
     source_url: https://userguide.taotesting.com/user-documentation/latest/public/creating-a-new-session
     verified_at: 2026-09-30
+
+  grading.score_scales:
+    value: unverified
 
   certificates.certificate_pdf:
     value: unverified

@@ -42,16 +42,20 @@ const itemList = {
   modified={lastVerified([a, b])}
   wide
 >
-  <h1>{a.name} vs {b.name}</h1>
-  <p class="lead">
+  <h1 class="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl dark:text-zinc-50">{a.name} vs {b.name}</h1>
+  <p class="mt-3 max-w-3xl text-sm leading-6 text-zinc-600 dark:text-zinc-400">
     <a href={url(`products/${a.slug}/`)}>{a.name}</a> and <a href={url(`products/${b.slug}/`)}>{b.name}</a> are checked
-    against the same {features.size} feature definitions. Both have a checked value for {both} features, and they
-    differ on {differ} of them. Tick "Only where products differ" to see just those. Click a value to open its source.
+    against the same {features.size} feature definitions. Click a value to open its source.
   </p>
+  <dl class="my-6 grid max-w-2xl grid-cols-3 gap-px overflow-hidden rounded-xl border border-zinc-200 bg-zinc-200 text-sm dark:border-zinc-800 dark:bg-zinc-800">
+    <div class="bg-white p-4 dark:bg-zinc-950"><dt class="eyebrow">Features</dt><dd class="mt-1 text-2xl font-semibold tabular-nums">{features.size}</dd></div>
+    <div class="bg-white p-4 dark:bg-zinc-950"><dt class="eyebrow">Both checked</dt><dd class="mt-1 text-2xl font-semibold tabular-nums">{both}</dd></div>
+    <div class="bg-white p-4 dark:bg-zinc-950"><dt class="eyebrow">Differ</dt><dd class="mt-1 text-2xl font-semibold tabular-nums">{differ}</dd></div>
+  </dl>
   {relevant.length > 0 && (
-    <>
-      <h2 id="verdicts">Area verdicts</h2>
-      <ul>
+    <section aria-labelledby="verdicts" class="mb-8">
+      <h2 id="verdicts" class="mb-3 text-lg font-semibold">Area verdicts</h2>
+      <ul class="space-y-2 text-sm">
         {relevant.map((v) => (
           <li>
             <strong>{areaLabel.get(v.area) ?? v.area}:</strong>{" "}
@@ -59,7 +63,7 @@ const itemList = {
           </li>
         ))}
       </ul>
-    </>
+    </section>
   )}
   <ComparisonApp products={[a, b]} />
 </Base>
