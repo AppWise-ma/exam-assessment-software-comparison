@@ -2,6 +2,7 @@
 import type { GetStaticPaths } from "astro";
 import Base from "../../layouts/Base.astro";
 import ComparisonApp from "../../components/ComparisonApp.astro";
+import ProductCard from "../../components/ProductCard.astro";
 import { MIN_PRODUCTS_TO_INDEX_PLATFORM, absUrl, products, url } from "../../lib/data.ts";
 import type { Product } from "../../../../scripts/lib/data.ts";
 import { PLATFORM_LABEL, lastVerified, softwareApplicationLd } from "../../../../scripts/lib/site.ts";
@@ -42,11 +43,14 @@ const itemList = {
   noindex={items.length < MIN_PRODUCTS_TO_INDEX_PLATFORM}
   wide
 >
-  <h1>{heading}</h1>
-  <p class="lead">
-    {items.length} {items.length === 1 ? "product" : "products"} on {label}:{" "}
-    {items.map((p, i) => <>{i > 0 && ", "}<a href={url(`products/${p.slug}/`)}>{p.name}</a></>)}.
-    {others > 0 && <> <a href={url()}>Compare with the other {others}</a> on the full table.</>}
+  <h1 class="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl dark:text-zinc-50">{heading}</h1>
+  <p class="mt-3 max-w-3xl text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+    {items.length} {items.length === 1 ? "product" : "products"} on {label}.
+    {others > 0 && <> <a href={url("compare/")}>Compare with the other {others}</a> on the full table.</>}
   </p>
+  <ul class="my-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="list">
+    {items.map((p) => <ProductCard product={p} />)}
+  </ul>
+  <h2 class="h2">Feature table</h2>
   <ComparisonApp products={items} />
 </Base>

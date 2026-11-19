@@ -1,13 +1,13 @@
 {
   "source": "https://github.com/tecnickcom/tcexam",
-  "fetched_at": "2026-09-30T21:42:23.934Z",
-  "stars": 622,
-  "last_push": "2026-09-26T11:20:20Z",
+  "fetched_at": "2026-11-19T22:17:27.172Z",
+  "stars": 634,
+  "last_push": "2026-11-15T15:37:37Z",
   "latest_release": {
-    "tag": "17.2.8",
-    "date": "2026-09-26T11:20:37Z"
+    "tag": "17.5.3",
+    "date": "2026-11-15T15:37:54Z"
   },
   "license_spdx": null,
-  "open_issues": 0,
+  "open_issues": 5,
   "archived": false
 }

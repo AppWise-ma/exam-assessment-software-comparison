@@ -45,6 +45,12 @@ features:
     source_url: https://github.com/odoo/odoo/blob/20.0/addons/survey/models/survey_question.py#L863-L872
     verified_at: 2026-09-30
 
+  questions.question_versioning:
+    value: unverified
+
+  questions.spoken_answers:
+    value: unverified
+
   delivery.time_limit:
     value: "yes"
     note: Survey time limit in minutes. When it is reached, the attempt is marked done on the next page load or submit.
@@ -75,6 +81,12 @@ features:
     method: source-code
     source_url: https://github.com/odoo/odoo/blob/20.0/addons/survey/controllers/main.py#L87-L88
     verified_at: 2026-09-30
+
+  delivery.timed_sections:
+    value: unverified
+
+  delivery.media_play_limit:
+    value: unverified
 
   delivery.resume_after_disconnect:
     value: "yes"
@@ -137,6 +149,9 @@ features:
     method: docs
     source_url: https://www.odoo.com/documentation/20.0/applications/marketing/surveys/create.html
     verified_at: 2026-09-30
+
+  grading.score_scales:
+    value: unverified
 
   certificates.certificate_pdf:
     value: "yes"

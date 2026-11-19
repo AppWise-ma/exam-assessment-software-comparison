@@ -46,6 +46,18 @@ areas:
         label: Images, audio, video in questions
         type: support
         definition: Question text or answers can embed images, audio and video.
+      - id: question_versioning
+        label: Question versioning
+        type: support
+        definition: >
+          Editing a question that candidates have already answered saves a new version,
+          and past attempts keep the version they answered.
+      - id: spoken_answers
+        label: Spoken (recorded) answers
+        type: support
+        definition: >
+          A candidate can record a spoken answer with the microphone inside the exam,
+          not only upload an audio file.
 
   - id: delivery
     label: Exam delivery and anti-cheat
@@ -72,6 +84,18 @@ areas:
         label: Open/close windows
         type: support
         definition: An exam can open and close automatically at set dates and times.
+      - id: timed_sections
+        label: Separately timed sections
+        type: support
+        definition: >
+          An exam can be split into sections or parts that each have their own time
+          limit within one attempt.
+      - id: media_play_limit
+        label: Audio play limit
+        type: support
+        definition: >
+          Audio in a question or section can be limited to a set number of plays
+          (as in listening tests).
       - id: resume_after_disconnect
         label: Resume after disconnect
         type: support
@@ -150,6 +174,12 @@ areas:
         definition: >
           The author controls when candidates see their score, correct answers and
           feedback (immediately, after close date, never).
+      - id: score_scales
+        label: Scaled scores and grade bands
+        type: support
+        definition: >
+          A raw score can be converted to a scaled score or a grade band (letter grades,
+          CEFR levels and similar) that the candidate sees in the result.
 
   - id: certificates
     label: Certificates

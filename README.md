@@ -9,13 +9,13 @@ Every value links to a source and a date. Read [how we test and pick winners](ME
 
 | Product | Platform | License | Price model | Version tested | Features checked |
 |---|---|---|---|---|---|
-| [Moodle (Quiz activity)](https://moodle.org) | Web app | GPL-3.0-or-later | free | 5.2.3 | 41/50 |
-| [Next Exams](https://www.nextsoftware.dev/joomla-extensions/next-exams) | Joomla | GPL-2.0-or-later | paid (GPL) | 6.1.0 | 39/50 |
-| [Odoo Survey](https://www.odoo.com/app/surveys) | Odoo | LGPL-3.0-only | free | 20.0 | 25/50 |
-| [Quiz and Survey Master](https://quizandsurveymaster.com) | WordPress | GPL-2.0-only | freemium | 11.2.7 | 30/50 |
-| [QuizTools](https://extensions.joomla.org/extension/living/education-a-culture/quiztools/) | Joomla | GPL-2.0-or-later | free | 1.5.0 | 28/50 |
-| [TAO Community Edition](https://www.taotesting.com/products/community-edition/) | Web app | AGPL-3.0-only | free | 2026.05-v1.1.1-public | 32/50 |
-| [TCExam](https://tcexam.org) | Web app | AGPL-3.0-or-later | free | 17.2.8 | 34/50 |
+| [Moodle (Quiz activity)](https://moodle.org) | Web app | GPL-3.0-or-later | free | 5.2.3 | 45/55 |
+| [Next Exams](https://www.nextsoftware.dev/joomla-extensions/next-exams) | Joomla | GPL-2.0-or-later | paid (GPL) | 6.3.0 | 46/55 |
+| [Odoo Survey](https://www.odoo.com/app/surveys) | Odoo | LGPL-3.0-only | free | 20.0 | 25/55 |
+| [Quiz and Survey Master](https://quizandsurveymaster.com) | WordPress | GPL-2.0-only | freemium | 11.2.7 | 31/55 |
+| [QuizTools](https://extensions.joomla.org/extension/living/education-a-culture/quiztools/) | Joomla | GPL-2.0-or-later | free | 1.5.0 | 28/55 |
+| [TAO Community Edition](https://www.taotesting.com/products/community-edition/) | Web app | AGPL-3.0-only | free | 2026.05-v1.1.1-public | 35/55 |
+| [TCExam](https://tcexam.org) | Web app | AGPL-3.0-or-later | free | 17.2.8 | 34/55 |
 
 ### Best in each area
 

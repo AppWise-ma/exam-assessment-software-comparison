@@ -31,68 +31,41 @@ const day = (iso: string | null | undefined) => (iso ? iso.slice(0, 10) : "unkno
   ld={[softwareApplicationLd(product, absUrl(`products/${product.slug}/`))]}
   modified={lastVerified([product])}
 >
-  <h1>{product.name}</h1>
-  <p class="lead">{product.summary.trim()}</p>
+  <header class="flex flex-wrap items-start justify-between gap-4">
+    <div class="min-w-0">
+      <p class="eyebrow">{platform} · version {product.version_tested}</p>
+      <h1 class="mt-2 text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">{product.name}</h1>
+      <p class="mt-3 max-w-3xl text-base leading-7 text-zinc-600 dark:text-zinc-400">{product.summary.trim()}</p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <a href={product.homepage} class="btn btn-ghost">Website</a>
+      <a href={url(pairs.length === 1 ? `compare/${pairs[0].pair}/` : "compare/")} class="btn btn-primary">Compare</a>
+    </div>
+  </header>
 
-  <dl class="facts">
-    <dt>Platform</dt>
-    <dd><a href={url(`platform/${product.platform}/`)}>{platform}</a></dd>
-    <dt>Version checked</dt>
-    <dd>{product.version_tested}</dd>
-    <dt>License</dt>
-    <dd><CellValue cell={license} /></dd>
-    <dt>Website</dt>
-    <dd><a href={product.homepage}>{product.homepage}</a></dd>
+  <dl class="mt-8 grid gap-px overflow-hidden rounded-xl border border-zinc-200 bg-zinc-200 text-sm sm:grid-cols-2 lg:grid-cols-4 dark:border-zinc-800 dark:bg-zinc-800">
+    <div class="bg-white p-4 dark:bg-zinc-950"><dt class="eyebrow">Platform</dt><dd class="mt-1"><a href={url(`platform/${product.platform}/`)}>{platform}</a></dd></div>
+    <div class="bg-white p-4 dark:bg-zinc-950"><dt class="eyebrow">License</dt><dd class="mt-1"><CellValue cell={license} /></dd></div>
+    <div class="bg-white p-4 dark:bg-zinc-950"><dt class="eyebrow">Features checked</dt><dd class="mt-1 font-medium tabular-nums">{assessed} of {total}</dd></div>
+    <div class="bg-white p-4 dark:bg-zinc-950"><dt class="eyebrow">Data file</dt><dd class="mt-1 truncate"><a href={`${REPO_URL}/blob/main/data/products/${product.slug}.yaml`}>{product.slug}.yaml</a></dd></div>
     {product.repository && (
-      <>
-        <dt>Source code</dt>
-        <dd><a href={product.repository}>{product.repository}</a></dd>
-      </>
+      <div class="bg-white p-4 sm:col-span-2 lg:col-span-4 dark:bg-zinc-950"><dt class="eyebrow">Source code</dt><dd class="mt-1 [overflow-wrap:anywhere]"><a href={product.repository}>{product.repository}</a></dd></div>
     )}
-    <dt>Features checked</dt>
-    <dd>{assessed} of {total}</dd>
-    <dt>Data file</dt>
-    <dd><a href={`${REPO_URL}/blob/main/data/products/${product.slug}.yaml`}>data/products/{product.slug}.yaml</a></dd>
   </dl>
 
   {pairs.length > 0 && (
-    <>
-      <h2 id="compare">Side-by-side comparisons</h2>
-      <ul>
-        {pairs.map((c) => <li><a href={url(`compare/${c.pair}/`)}>{nameOf(c.a)} vs {nameOf(c.b)}</a></li>)}
-      </ul>
-    </>
-  )}
-
-  <h2 id="health">Project health</h2>
-  {health ? (
-    <>
-      <dl class="facts">
-        <dt>Latest GitHub/GitLab release</dt>
-        <dd>{health.latest_release ? `${health.latest_release.tag} (${day(health.latest_release.date)})` : "None published there (the project may release through tags or another site)"}</dd>
-        <dt>Last push</dt>
-        <dd>{day(health.last_push)}</dd>
-        <dt>Stars</dt>
-        <dd>{health.stars ?? "unknown"}</dd>
-        <dt>Open issues</dt>
-        <dd>{health.open_issues ?? "unknown"}</dd>
-        <dt>License reported by host</dt>
-        <dd>{health.license_spdx ?? "not detected"}</dd>
-        <dt>Archived</dt>
-        <dd>{health.archived === null ? "unknown" : health.archived ? "yes" : "no"}</dd>
-      </dl>
-      <p class="muted">
-        Fetched automatically from <a href={health.source}>{health.source}</a> on {day(health.fetched_at)}.
-        These numbers are not checked by hand.
-      </p>
-    </>
-  ) : (
-    <p class="muted">No health data: the source is not in a public GitHub or GitLab repository.</p>
+    <nav aria-label="Comparisons" class="mt-6 flex flex-wrap gap-2 text-sm">
+      {pairs.map((c) => (
+        <a href={url(`compare/${c.pair}/`)} class="rounded-full border border-zinc-200 px-3 py-1 text-zinc-700 no-underline hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800">
+          {nameOf(c.a)} vs {nameOf(c.b)}
+        </a>
+      ))}
+    </nav>
   )}
 
   {areas.map((area) => (
     <section aria-labelledby={`area-${area.id}`}>
-      <h2 id={`area-${area.id}`}>{area.label}</h2>
+      <h2 id={`area-${area.id}`} class="h2">{area.label}</h2>
       <div class="table-wrap">
         <table>
           <thead>
@@ -101,7 +74,6 @@ const day = (iso: string | null | undefined) => (iso ? iso.slice(0, 10) : "unkno
               <th scope="col">Value</th>
               <th scope="col">Note</th>
               <th scope="col">Checked</th>
-              <th scope="col">How</th>
             </tr>
           </thead>
           <tbody>
@@ -111,12 +83,11 @@ const day = (iso: string | null | undefined) => (iso ? iso.slice(0, 10) : "unkno
               return (
                 <tr>
                   <th scope="row" title={f.definition.trim()}>{f.label}</th>
-                  <td><CellValue cell={cell} /></td>
-                  <td>{ok && cell.note}</td>
-                  <td>{ok && <time datetime={cell.verified_at}>{cell.verified_at}</time>}</td>
-                  <td>
-                    {ok && cell.method}
-                    {ok && cell.evidence && <> (<a href={`${REPO_URL}/blob/main/${cell.evidence}`}>screenshot</a>)</>}
+                  <td class="min-w-28"><CellValue cell={cell} /></td>
+                  <td class="min-w-64 text-zinc-600 dark:text-zinc-400">{ok && cell.note}</td>
+                  <td class="text-xs whitespace-nowrap muted">
+                    {ok && <time datetime={cell.verified_at}>{cell.verified_at}</time>}
+                    {ok && <span class="block">{cell.method}{cell.evidence && <> · <a href={`${REPO_URL}/blob/main/${cell.evidence}`}>screenshot</a></>}</span>}
                   </td>
                 </tr>
               );
@@ -126,4 +97,26 @@ const day = (iso: string | null | undefined) => (iso ? iso.slice(0, 10) : "unkno
       </div>
     </section>
   ))}
+
+  <section aria-labelledby="health">
+    <h2 id="health" class="h2">Project health</h2>
+    {health ? (
+      <>
+        <dl class="grid gap-px overflow-hidden rounded-xl border border-zinc-200 bg-zinc-200 text-sm sm:grid-cols-3 dark:border-zinc-800 dark:bg-zinc-800">
+          <div class="bg-white p-4 dark:bg-zinc-950"><dt class="eyebrow">Latest release on the host</dt><dd class="mt-1">{health.latest_release ? `${health.latest_release.tag} (${day(health.latest_release.date)})` : "None published there"}</dd></div>
+          <div class="bg-white p-4 dark:bg-zinc-950"><dt class="eyebrow">Last push</dt><dd class="mt-1">{day(health.last_push)}</dd></div>
+          <div class="bg-white p-4 dark:bg-zinc-950"><dt class="eyebrow">Stars</dt><dd class="mt-1 tabular-nums">{health.stars ?? "unknown"}</dd></div>
+          <div class="bg-white p-4 dark:bg-zinc-950"><dt class="eyebrow">Open issues</dt><dd class="mt-1 tabular-nums">{health.open_issues ?? "unknown"}</dd></div>
+          <div class="bg-white p-4 dark:bg-zinc-950"><dt class="eyebrow">License reported by host</dt><dd class="mt-1">{health.license_spdx ?? "not detected"}</dd></div>
+          <div class="bg-white p-4 dark:bg-zinc-950"><dt class="eyebrow">Archived</dt><dd class="mt-1">{health.archived === null ? "unknown" : health.archived ? "yes" : "no"}</dd></div>
+        </dl>
+        <p class="mt-3 text-xs muted">
+          Fetched automatically from <a href={health.source}>{health.source}</a> on {day(health.fetched_at)}.
+          These numbers are not checked by hand.
+        </p>
+      </>
+    ) : (
+      <p class="text-sm muted">No health data: the source is not in a public GitHub or GitLab repository.</p>
+    )}
+  </section>
 </Base>

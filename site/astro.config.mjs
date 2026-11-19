@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
+import tailwindcss from "@tailwindcss/vite";
 import { parse } from "yaml";
 
 // Repository root, so pages can read ../data with the same loaders as the scripts.
@@ -32,6 +33,7 @@ export default defineConfig({
     }),
   ],
   vite: {
+    plugins: [tailwindcss()],
     define: { __REPO_ROOT__: JSON.stringify(repoRoot) },
   },
 });

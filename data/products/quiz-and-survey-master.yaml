@@ -54,6 +54,12 @@ features:
     source_url: https://quizandsurveymaster.com/docs/creating-quizzes-and-surveys/adding-and-editing-questions/
     verified_at: 2026-09-30
 
+  questions.question_versioning:
+    value: unverified
+
+  questions.spoken_answers:
+    value: unverified
+
   delivery.time_limit:
     value: "yes"
     note: Enforced in the browser. At zero the questions freeze; an option submits the quiz automatically.
@@ -88,6 +94,16 @@ features:
     method: source-code
     source_url: https://github.com/QuizandSurveyMaster/quiz_master_next/blob/9aeaca6a06d358bae69200905912fb6f02b1bd0e/php/classes/class-qmn-quiz-manager.php#L3919-L3969
     verified_at: 2026-09-30
+
+  delivery.timed_sections:
+    value: "no"
+    note: One time limit for the whole quiz; the countdown starts on the first Next click when the quiz is paginated.
+    method: docs
+    source_url: https://quizandsurveymaster.com/docs/creating-quizzes-and-surveys/adding-a-timer-to-your-quiz-or-survey/
+    verified_at: 2026-11-19
+
+  delivery.media_play_limit:
+    value: unverified
 
   delivery.resume_after_disconnect:
     value: addon-paid
@@ -158,6 +174,9 @@ features:
     method: docs
     source_url: https://quizandsurveymaster.com/docs/creating-quizzes-and-surveys/basic-settings/
     verified_at: 2026-09-30
+
+  grading.score_scales:
+    value: unverified
 
   certificates.certificate_pdf:
     value: addon-free

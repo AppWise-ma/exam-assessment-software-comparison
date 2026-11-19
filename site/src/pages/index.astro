@@ -1,19 +1,62 @@
 ---
 import Base from "../layouts/Base.astro";
-import ComparisonApp from "../components/ComparisonApp.astro";
-import { absUrl, areas, bySlug, productCoverage, products, url, verdicts } from "../lib/data.ts";
-import { PLATFORM_LABEL, comparePairs, lastVerified, softwareApplicationLd } from "../../../scripts/lib/site.ts";
+import ProductCard from "../components/ProductCard.astro";
+import { absUrl, areas, bySlug, products, url, verdicts } from "../lib/data.ts";
+import type { Product } from "../../../scripts/lib/data.ts";
+import { PLATFORM_LABEL, comparePairs, isAssessed, lastVerified, softwareApplicationLd, valueLabel } from "../../../scripts/lib/site.ts";
 
-const names = products.map((p) => p.name);
 const title = products.length
   ? `Open-source exam software compared (${products.length} tools, sourced)`
   : "Open-source exam software comparison";
 const description = products.length
-  ? `Compare open-source exam and quiz software: ${names.join(", ")}. Every value links to its source.`
+  ? `Compare open-source exam and quiz software: ${products.map((p) => p.name).join(", ")}. Every value links to its source.`
   : "A sourced comparison of open-source exam, quiz and assessment software.";
 const featureCount = areas.reduce((n, a) => n + a.features.length, 0);
 const pairs = comparePairs(products.map((p) => p.slug));
 const nameOf = (slug: string) => bySlug.get(slug)?.name ?? slug;
+const modified = lastVerified(products);
+const areaLabel = new Map(areas.map((a) => [a.id, a.label]));
+
+const distinct = (key: string) =>
+  [...new Set(products.map((p) => p.features[key]).filter(isAssessed).map((c) => String(c.value)))].sort();
+const platforms = [...new Set(products.map((p) => p.platform))].sort();
+const licenses = distinct("cost.license_spdx");
+const prices = distinct("cost.price_model");
+
+// Questions answered straight from the data, so the answer changes when a value changes.
+const FAQ: { q: string; key: string; free?: boolean }[] = [
+  { q: "Which open-source exam software enforces the time limit on the server?", key: "delivery.server_side_timer" },
+  { q: "Which tools can draw random questions from a pool?", key: "questions.random_from_pool" },
+  { q: "Which tools import QTI question packages?", key: "standards.qti_import" },
+  { q: "Which tools work as an LTI tool inside an LMS?", key: "standards.lti" },
+  { q: "Which tools let candidates record a spoken answer?", key: "questions.spoken_answers" },
+  { q: "Which tools offer webcam proctoring?", key: "proctoring.webcam_proctoring" },
+  { q: "Which of these exam tools are free?", key: "cost.price_model", free: true },
+];
+const list = (items: Product[]) => {
+  const names = items.map((p) => p.name);
+  return names.length <= 1 ? names.join("") : `${names.slice(0, -1).join(", ")} and ${names.at(-1)}`;
+};
+const faq = FAQ.map(({ q, key, free }) => {
+  const by = (label: string) => products.filter((p) => valueLabel(p.features[key]) === label);
+  const parts: string[] = [];
+  if (free) {
+    const yes = products.filter((p) => isAssessed(p.features[key]) && String(p.features[key].value) === "free");
+    const other = products.filter((p) => isAssessed(p.features[key]) && String(p.features[key].value) !== "free");
+    if (yes.length) parts.push(`Free: ${list(yes)}.`);
+    for (const p of other) parts.push(`${p.name}: ${String(p.features[key].value)}.`);
+  } else {
+    const yes = by("Yes");
+    const partial = [...by("Partial"), ...by("Paid add-on"), ...by("Free add-on")];
+    const no = by("No");
+    const unchecked = by("Not checked");
+    parts.push(yes.length ? `Yes: ${list(yes)}.` : "None of the checked tools has it built in.");
+    if (partial.length) parts.push(`Partly or through an add-on: ${partial.map((p) => `${p.name} (${valueLabel(p.features[key]).toLowerCase()})`).join(", ")}.`);
+    if (no.length) parts.push(`No: ${list(no)}.`);
+    if (unchecked.length) parts.push(`Not checked yet: ${list(unchecked)}.`);
+  }
+  return { q, key, a: parts.join(" ") };
+});
 
 const itemList = {
   "@type": "ItemList",
@@ -26,56 +69,183 @@ const itemList = {
     item: softwareApplicationLd(p, absUrl(`products/${p.slug}/`)),
   })),
 };
-const areaLabel = new Map(areas.map((a) => [a.id, a.label]));
+const faqLd = {
+  "@type": "FAQPage",
+  mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+};
 ---
-<Base title={title} description={description} ld={[itemList]} modified={lastVerified(products)} wide>
-  <h1>Compare open-source exam software</h1>
-  <p class="lead">
-    {products.length} exam, quiz and assessment tools checked against the same {featureCount} features, from question
-    banks and timers to proctoring, certificates and QTI. Pick products and filter by area. Click a value to open its
-    source; hover it for the date it was checked.{" "}
-    <a href={url("methodology/")}>How values are collected</a>.
-  </p>
+<Base title={title} description={description} ld={[itemList, faqLd]} modified={modified}>
+  <section class="pt-6 pb-10 sm:pt-10">
+    {modified && <p class="eyebrow">Data checked <time datetime={modified}>{modified}</time></p>}
+    <h1 class="mt-3 max-w-3xl text-3xl font-semibold tracking-tight text-balance text-zinc-900 sm:text-4xl dark:text-zinc-50">
+      Compare open-source exam software
+    </h1>
+    <p class="mt-4 max-w-2xl text-base leading-7 text-pretty text-zinc-600 dark:text-zinc-400">
+      {products.length} exam, quiz and assessment tools for Joomla, WordPress, Odoo and the web, checked against the same
+      {" "}{featureCount} features: question banks, timers, proctoring, grading, certificates, QTI and LTI.
+      Each value links to the page it came from.
+    </p>
+    <div class="mt-6 flex flex-wrap gap-3">
+      <a href={url("compare/")} class="btn btn-primary">Open the full comparison table</a>
+      <a href={url("methodology/")} class="btn btn-ghost">How values are checked</a>
+    </div>
+  </section>
 
-  {products.length === 0 ? <p>No products published yet.</p> : <ComparisonApp products={products} />}
+  {products.length === 0 ? <p>No products published yet.</p> : (
+    <section aria-labelledby="directory" data-directory>
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <h2 id="directory" class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">All products</h2>
+        <p class="text-sm muted" role="status" aria-live="polite" data-count>{products.length} products</p>
+      </div>
+
+      <form class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="Filter products" onsubmit="return false" hidden data-filters>
+        <label class="grid gap-1 text-xs font-medium text-zinc-600 dark:text-zinc-400">
+          Search
+          <input type="search" name="q" class="field" placeholder="Name or keyword" autocomplete="off" />
+        </label>
+        <label class="grid gap-1 text-xs font-medium text-zinc-600 dark:text-zinc-400">
+          Platform
+          <select name="platform" class="field">
+            <option value="">All platforms</option>
+            {platforms.map((pl) => <option value={pl}>{PLATFORM_LABEL[pl] ?? pl}</option>)}
+          </select>
+        </label>
+        <label class="grid gap-1 text-xs font-medium text-zinc-600 dark:text-zinc-400">
+          License
+          <select name="license" class="field">
+            <option value="">All licenses</option>
+            {licenses.map((l) => <option value={l}>{l}</option>)}
+          </select>
+        </label>
+        <label class="grid gap-1 text-xs font-medium text-zinc-600 dark:text-zinc-400">
+          Price
+          <select name="price" class="field">
+            <option value="">Any price</option>
+            {prices.map((p) => <option value={p}>{p}</option>)}
+          </select>
+        </label>
+      </form>
+
+      <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="list">
+        {products.map((p) => <ProductCard product={p} selectable />)}
+      </ul>
+      <p class="mt-6 hidden rounded-xl border border-dashed border-zinc-300 p-8 text-center text-sm muted dark:border-zinc-700" data-empty>
+        No product matches these filters.
+      </p>
+
+      <div class="pointer-events-none fixed inset-x-0 bottom-4 z-30 flex justify-center px-4" hidden data-comparebar>
+        <div class="pointer-events-auto flex items-center gap-3 rounded-full border border-zinc-200 bg-white/95 py-1.5 pr-1.5 pl-4 text-sm shadow-lg shadow-zinc-900/10 backdrop-blur dark:border-zinc-700 dark:bg-zinc-900/95">
+          <span data-picked class="text-zinc-700 dark:text-zinc-300"></span>
+          <button type="button" class="text-zinc-500 underline-offset-2 hover:underline" data-clear>Clear</button>
+          <a href={url("compare/")} class="btn btn-primary rounded-full" data-go>Compare</a>
+        </div>
+      </div>
+    </section>
+  )}
 
   {verdicts.length > 0 && (
-    <>
-      <h2 id="verdicts">Best in each area</h2>
-      <ul>
+    <section aria-labelledby="verdicts">
+      <h2 id="verdicts" class="h2">Best in each area</h2>
+      <ul class="grid gap-4 sm:grid-cols-2">
         {verdicts.map((v) => (
-          <li>
-            <strong>{areaLabel.get(v.area) ?? v.area}:</strong>{" "}
-            {v.winners.map((w) => bySlug.get(w)?.name ?? w).join(", ") || "No clear winner"}. {v.rationale}
+          <li class="card p-5">
+            <p class="eyebrow">{areaLabel.get(v.area) ?? v.area}</p>
+            <p class="mt-2 font-semibold">{v.winners.map((w) => nameOf(w)).join(", ") || "No clear winner"}</p>
+            <p class="mt-1 text-sm muted">{v.rationale}</p>
           </li>
         ))}
       </ul>
-    </>
-  )}
-
-  {products.length > 0 && (
-    <section aria-labelledby="products" class="narrow">
-      <h2 id="products">The products</h2>
-      <dl class="product-list">
-        {products.map((p) => {
-          const { assessed, total } = productCoverage(p);
-          return (
-            <>
-              <dt><a href={url(`products/${p.slug}/`)}>{p.name}</a> <span class="muted">({PLATFORM_LABEL[p.platform] ?? p.platform}, version {p.version_tested})</span></dt>
-              <dd>{p.summary.trim()} {assessed} of {total} features checked.</dd>
-            </>
-          );
-        })}
-      </dl>
     </section>
   )}
 
   {pairs.length > 0 && (
-    <section aria-labelledby="pairs" class="narrow">
-      <h2 id="pairs">Side-by-side comparisons</h2>
-      <ul>
-        {pairs.map((c) => <li><a href={url(`compare/${c.pair}/`)}>{nameOf(c.a)} vs {nameOf(c.b)}</a></li>)}
+    <section aria-labelledby="pairs">
+      <h2 id="pairs" class="h2">Side-by-side comparisons</h2>
+      <ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {pairs.map((c) => (
+          <li>
+            <a href={url(`compare/${c.pair}/`)} class="card flex items-center justify-between px-4 py-3 text-sm font-medium text-zinc-800 no-underline transition-colors hover:border-zinc-300 hover:bg-zinc-50 dark:text-zinc-200 dark:hover:border-zinc-700 dark:hover:bg-zinc-800/50">
+              <span>{nameOf(c.a)} <span class="font-normal muted">vs</span> {nameOf(c.b)}</span>
+              <span aria-hidden="true" class="muted">→</span>
+            </a>
+          </li>
+        ))}
       </ul>
     </section>
   )}
+
+  {products.length > 0 && (
+    <section aria-labelledby="faq">
+      <h2 id="faq" class="h2">Quick answers</h2>
+      <div class="divide-y divide-zinc-200 rounded-xl border border-zinc-200 dark:divide-zinc-800 dark:border-zinc-800">
+        {faq.map((f) => (
+          <details class="group px-5 py-4 [&_summary::-webkit-details-marker]:hidden">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-zinc-900 dark:text-zinc-100">
+              <h3 class="text-sm sm:text-base">{f.q}</h3>
+              <span aria-hidden="true" class="text-zinc-400 transition-transform group-open:rotate-45">+</span>
+            </summary>
+            <p class="mt-3 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+              {f.a}{" "}
+              <a href={url(`compare/?area=${f.key.split(".")[0]}`)}>See the table</a>.
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+  )}
 </Base>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-directory]");
+  if (root) {
+    const form = root.querySelector<HTMLFormElement>("[data-filters]")!;
+    const cards = [...root.querySelectorAll<HTMLElement>("[data-card]")];
+    const count = root.querySelector<HTMLElement>("[data-count]")!;
+    const empty = root.querySelector<HTMLElement>("[data-empty]")!;
+    const bar = root.querySelector<HTMLElement>("[data-comparebar]")!;
+    const picked = root.querySelector<HTMLElement>("[data-picked]")!;
+    const go = root.querySelector<HTMLAnchorElement>("[data-go]")!;
+    const base = go.getAttribute("href")!;
+    const picks = [...root.querySelectorAll<HTMLInputElement>('input[name="pick"]')];
+    const field = (name: string) => form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement;
+
+    function filter() {
+      const q = field("q").value.trim().toLowerCase();
+      const platform = field("platform").value;
+      const license = field("license").value;
+      const price = field("price").value;
+      let shown = 0;
+      for (const c of cards) {
+        const ok =
+          (!q || c.dataset.search!.includes(q)) &&
+          (!platform || c.dataset.platform === platform) &&
+          (!license || c.dataset.license === license) &&
+          (!price || c.dataset.price === price);
+        c.hidden = !ok;
+        if (ok) shown++;
+      }
+      count.textContent = shown === cards.length ? `${cards.length} products` : `${shown} of ${cards.length} products`;
+      empty.classList.toggle("hidden", shown > 0);
+    }
+
+    function updateBar() {
+      const slugs = picks.filter((p) => p.checked).map((p) => p.value);
+      bar.hidden = slugs.length === 0;
+      picked.textContent = slugs.length === 1 ? "1 selected, pick one more" : `${slugs.length} selected`;
+      go.href = slugs.length ? `${base}?p=${slugs.join(",")}` : base;
+      go.setAttribute("aria-disabled", String(slugs.length < 2));
+      go.classList.toggle("opacity-50", slugs.length < 2);
+      go.classList.toggle("pointer-events-none", slugs.length < 2);
+    }
+
+    form.addEventListener("input", filter);
+    picks.forEach((p) => p.addEventListener("change", updateBar));
+    root.querySelector("[data-clear]")!.addEventListener("click", () => {
+      picks.forEach((p) => (p.checked = false));
+      updateBar();
+    });
+    form.hidden = false;
+    filter();
+    updateBar();
+  }
+</script>

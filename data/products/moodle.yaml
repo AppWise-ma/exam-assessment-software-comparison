@@ -53,6 +53,20 @@ features:
     source_url: https://docs.moodle.org/502/en/TinyMCE_editor
     verified_at: 2026-09-30
 
+  questions.question_versioning:
+    value: partial
+    note: Edits are kept as numbered versions with a history, and a quiz uses the latest version or one pinned version. The docs page does not say what happens to attempts already started.
+    method: docs
+    source_url: https://docs.moodle.org/502/en/Question_bank
+    verified_at: 2026-11-19
+
+  questions.spoken_answers:
+    value: addon-paid
+    note: Poodll Recording question type (with the Poodll filter). Its Moodle docs page describes a 30-day free trial and site registration at poodll.com.
+    method: docs
+    source_url: https://docs.moodle.org/503/en/Poodll_Recording_Question
+    verified_at: 2026-11-19
+
   delivery.time_limit:
     value: "yes"
     note: When time expires, open attempts are submitted automatically by default. A grace period or "not counted" can be chosen instead.
@@ -86,6 +100,16 @@ features:
     method: docs
     source_url: https://docs.moodle.org/502/en/Quiz_settings
     verified_at: 2026-09-30
+
+  delivery.timed_sections:
+    value: "no"
+    note: The quiz time limit applies to the whole quiz; the settings page has no per-section or per-page limit.
+    method: docs
+    source_url: https://docs.moodle.org/502/en/Quiz_settings
+    verified_at: 2026-11-19
+
+  delivery.media_play_limit:
+    value: unverified
 
   delivery.resume_after_disconnect:
     value: "yes"
@@ -167,6 +191,13 @@ features:
     method: docs
     source_url: https://docs.moodle.org/502/en/Quiz_settings
     verified_at: 2026-09-30
+
+  grading.score_scales:
+    value: yes
+    note: Gradebook grade letters convert percentages to letters, per course, category or grade item.
+    method: docs
+    source_url: https://docs.moodle.org/502/en/Grade_letters
+    verified_at: 2026-11-19
 
   certificates.certificate_pdf:
     value: addon-free
