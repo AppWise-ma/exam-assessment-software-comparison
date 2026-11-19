@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync } from "node:fs";
+import { copyFileSync, existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "astro/config";
@@ -21,6 +21,22 @@ for (const file of readdirSync(productsDir).filter((f) => f.endsWith(".yaml") &&
 }
 const thinPlatforms = Object.keys(platformCounts).filter((p) => platformCounts[p] < MIN_PRODUCTS_TO_INDEX_PLATFORM);
 
+// Also publish the sitemap at the usual /sitemap.xml address. While every URL fits in one
+// sitemap-0.xml, that file is copied as is; with more chunks the index is copied instead.
+function sitemapXml() {
+  return {
+    name: "sitemap-xml",
+    hooks: {
+      "astro:build:done": ({ dir }) => {
+        const out = fileURLToPath(dir);
+        const chunks = readdirSync(out).filter((f) => /^sitemap-\d+\.xml$/.test(f));
+        const source = chunks.length === 1 ? chunks[0] : "sitemap-index.xml";
+        if (existsSync(join(out, source))) copyFileSync(join(out, source), join(out, "sitemap.xml"));
+      },
+    },
+  };
+}
+
 export default defineConfig({
   site: "https://appwise-ma.github.io",
   base: "/exam-assessment-software-comparison",
@@ -31,6 +47,7 @@ export default defineConfig({
       filter: (page) =>
         !page.includes("/404") && !thinPlatforms.some((p) => page.endsWith(`/platform/${p}/`)),
     }),
+    sitemapXml(),
   ],
   vite: {
     plugins: [tailwindcss()],
