@@ -80,7 +80,7 @@ const container = wide ? "max-w-[100rem]" : "max-w-6xl";
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3E%3Crect width=%2716%27 height=%2716%27 rx=%274%27 fill=%27%232459e0%27/%3E%3Cpath d=%27M4 8.5l2.5 2.5L12 5%27 stroke=%27white%27 stroke-width=%272%27 fill=%27none%27/%3E%3C/svg%3E" />
-    <link rel="sitemap" href={url("sitemap-index.xml")} />
+    <link rel="sitemap" href={url("sitemap.xml")} />
     {structured.map((item) => <script type="application/ld+json" set:html={jsonLd(item)} />)}
   </head>
   <body class="flex min-h-screen flex-col">
